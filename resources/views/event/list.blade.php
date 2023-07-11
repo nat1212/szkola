@@ -62,8 +62,8 @@
                             <td>{{ $event->status->name }}</td>
                             @foreach ($events as $event)
                 <td>
-                    <select onchange="if (this.value) window.location.href = this.value;">
-                    <option value="">Wybierz</option>
+                    <select id="mySelect" onchange="if (this.value) window.location.href = this.value;">
+                    <option value=""disabled selected>Wybierz</option>
                     <option value="{{ route('event.edit', $event->id) }}">Edycja</option>
                     <option value="{{ route('event.show', $event->id) }}">Podgląd</option>
                     <option value="">AM</option>
@@ -75,15 +75,9 @@
                     <button class="btn btn-danger btn-sm delete" data-id="{{ $event->id }}">X</button>
                 </td>
                 @endforeach
-                        <td>{{"Podgląd"}}
-                        <a href="{{route('event.show' , $event->id)}}">
-                            <button class="btn btn-primary btn-sm ">
-                                E
-                            </button>
-                            </a>
-                        </td>
+
                         </tr>
-                        @if ($event->info)
+                        @if ($event->info->isNotEmpty())
     <tr class="details">
         <td colspan="12">
             <table class="table table-striped">
@@ -110,35 +104,22 @@
                             <td>{{ $info->description }}</td>
                             <td>{{ $info->comments }}</td>
                             <td>{{ $info->number_seats }}</td>
-                            <td>{{"Edycja"}}
-                        <a href="{{route('event.edit' , $event->id)}}">
-                            <button class="btn btn-success btn-sm ">
-                                E
-                            </button>
-                            </a>
-                            <a href="{{route('event.edit' , $event->id)}}">
-                            <button class="btn btn-success btn-sm ">
-                                AM
-                            </button>
-                            </a>
-                            <a href="">
-                            <button class="btn btn-success btn-sm ">
-                                AE
-                            </button>
-                            </a>
-                        </td>
-                        <td>{{"Usuwanie"}}
-                            <button class="btn btn-danger btn-sm delete" data-id="{{ $event->id }}">
-                                X
-                            </button>
-                        </td>
-                        <td>{{"Podgląd"}}
-                        <a href="{{route('event.show' , $event->id)}}">
-                            <button class="btn btn-primary btn-sm ">
-                                E
-                            </button>
-                            </a>
-                        </td>
+                            @foreach ($event->info as $info)
+                <td>
+                    <select id="mySelect" onchange="if (this.value) window.location.href = this.value;">
+                    <option value=""disabled selected>Wybierz</option>
+                    <option value="{{ route('event.edit', $event->id) }}">Edycja</option>
+                    <option value="{{ route('event.show', $event->id) }}">Podgląd</option>
+                    <option value="">AM</option>
+                    <option value="">AE</option>
+                    </select>
+                </td>
+                <td>
+                    Usuwanie
+                    <button class="btn btn-danger btn-sm delete" data-id="{{ $event->id }}">X</button>
+                </td>
+                @endforeach
+
                         </tr>
                     @endforeach
                 </tbody>
@@ -173,7 +154,25 @@
                     $(this).removeClass('show-details'); // Usuń klasę show-details, jeśli brak podwydarzenia
                 }
             });
+            
+            var selectElement = document.getElementById("mySelect");
 
+// Zresetuj wartość do domyślnej po powrocie z trybu edycji lub podglądu
+window.addEventListener("pageshow", function(event) {
+  var historyTraversal = event.persisted || (typeof window.performance != "undefined" && window.performance.navigation.type === 2);
+  if (historyTraversal) {
+    selectElement.selectedIndex = 0;
+  }
+});
+              // Pobierz element select
+  var selectElement = document.getElementById("mySelect");
+
+// Zresetuj wartość do domyślnej po opuszczeniu trybu edycji
+selectElement.addEventListener("blur", function() {
+  if (selectElement.value === "") {
+    selectElement.selectedIndex = 0;
+  }
+});
             // Get the CSRF token from the meta tag
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
