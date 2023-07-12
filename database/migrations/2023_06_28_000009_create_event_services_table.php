@@ -44,14 +44,12 @@ return new class extends Migration
                
             
             $table->foreign('events_id')
-                ->references('id')->on('events')
-                ->onDelete('no action')
-                ->onUpdate('no action');
+                ->references('id')->on('events');
+              
 
             $table->foreign('users_id')
-                ->references('id')->on('users')
-                ->onDelete('no action')
-                ->onUpdate('no action');
+                ->references('id')->on('users');
+                
         });
     }
 

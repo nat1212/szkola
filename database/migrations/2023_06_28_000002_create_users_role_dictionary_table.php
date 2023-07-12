@@ -26,6 +26,7 @@ return new class extends Migration
             $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('name', 45)->nullable()->default(null);
+            $table->text('description')->nullable()->default(null);
             $table->timestamps();
         });
     }

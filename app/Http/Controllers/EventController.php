@@ -39,12 +39,16 @@ class EventController extends Controller
         ->where('users_id', $user_id)
         ->value('users_role_dictionary_id');
         if ($usersRoleId == 1){
-            return true;
+            return 1;
         }
-        else {
+        elseif($usersRoleId==2) 
+        {
          
-            return false;
+            return 2;
         }  
+        else{
+            return 3;
+        }
 
     }
     public function showEventDetails($eventDetailsId)
@@ -112,7 +116,7 @@ class EventController extends Controller
     public function edit(Event $event)  
     {
         $hasPermission = $this->permissions();
-        if($hasPermission){
+        if($hasPermission==1 || $hasPermission==2 ){
             return view("event.edit", [
                 'event' => $event,
                 'statuses' => EventStatus::all(),

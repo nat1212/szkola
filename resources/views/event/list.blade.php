@@ -21,119 +21,116 @@
         </ul>
     </div>
 @endif
-        <div class="row">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">id</th>
-                        <th scope="col">name</th>
-                        <th scope="col">shortcut</th>
-                        <th scope="col">city</th>
-                        <th scope="col">street</th>
-                        <th scope="col">date_start</th>
-                        <th scope="col">date_end</th>
-                        <th scope="col">date_start_rek</th>
-                        <th scope="col">date_end_rek</th>
-                        <th scope="col">date_start_publi</th>
-                        <th scope="col">date_end_publi</th>
-                        <th scope="col">status</th>
-                    </tr>
-                </thead>
-                    <tbody>
-                    @foreach ($events as $event)
-                        <tr>
-                            <td>
-                                @if ($event->info->isNotEmpty())
-                                    <button class="btn btn-link show-details" data-id="{{ $event->id }}">></button>
-                                @else
-                                    <button class="btn btn-link" disabled>></button>
-                                @endif
-                            </td>
-                            <td>{{ $event->name }}</td>
-                            <td>{{ $event->shortcut }}</td>
-                            <td>{{ $event->city }}</td>
-                            <td>{{ $event->street }}</td>
-                            <td>{{ $event->date_start }}</td>
-                            <td>{{ $event->date_end }}</td>
-                            <td>{{ $event->date_start_rek }}</td>
-                            <td>{{ $event->date_end_rek }}</td>
-                            <td>{{ $event->date_start_publi }}</td>
-                            <td>{{ $event->date_end_publi }}</td>
-                            <td>{{ $event->status->name }}</td>
-                            @foreach ($events as $event)
+<div class="row">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">id</th>
+                <th scope="col">name</th>
+                <th scope="col">shortcut</th>
+                <th scope="col">city</th>
+                <th scope="col">street</th>
+                <th scope="col">date_start</th>
+                <th scope="col">date_end</th>
+                <th scope="col">date_start_rek</th>
+                <th scope="col">date_end_rek</th>
+                <th scope="col">date_start_publi</th>
+                <th scope="col">date_end_publi</th>
+                <th scope="col">status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($events as $event)
+            <tr>
+                <td>
+                    @if ($event->info->isNotEmpty())
+                    <button class="btn btn-link show-details" data-id="{{ $event->id }}">></button>
+                    @else
+                    <button class="btn btn-link" disabled>></button>
+                    @endif
+                </td>
+                <td>{{ $event->name }}</td>
+                <td>{{ $event->shortcut }}</td>
+                <td>{{ $event->city }}</td>
+                <td>{{ $event->street }}</td>
+                <td>{{ $event->date_start }}</td>
+                <td>{{ $event->date_end }}</td>
+                <td>{{ $event->date_start_rek }}</td>
+                <td>{{ $event->date_end_rek }}</td>
+                <td>{{ $event->date_start_publi }}</td>
+                <td>{{ $event->date_end_publi }}</td>
+                <td>{{ $event->status->name }}</td>
                 <td>
                     <select id="mySelect" onchange="if (this.value) window.location.href = this.value;">
-                    <option value=""disabled selected>Wybierz</option>
-                    <option value="{{ route('event.edit', $event->id) }}">Edycja</option>
-                    <option value="{{ route('event.show', $event->id) }}">Podgląd</option>
-                    <option value="">AM</option>
-                    <option value="">AE</option>
+                        <option value="" disabled selected>Wybierz</option>
+                        <option value="{{ route('event.edit', $event->id) }}">Edycja</option>
+                        <option value="{{ route('event.show', $event->id) }}">Podgląd</option>
+                        <option value="">AM</option>
+                        <option value="{{ route('create2', $event->id)}}">AE</option>
+
+
+
+
                     </select>
                 </td>
                 <td>
                     Usuwanie
                     <button class="btn btn-danger btn-sm delete" data-id="{{ $event->id }}">X</button>
                 </td>
-                @endforeach
-
-                        </tr>
-                        @if ($event->info->isNotEmpty())
-    <tr class="details">
-        <td colspan="12">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Imię prezentera</th>
-                        <th>Nazwisko prezentera</th>
-                        <th>Tytuł</th>
-                        <th>Data rozpoczęcia</th>
-                        <th>Data zakończenia</th>
-                        <th>Opis</th>
-                        <th>Komentarze</th>
-                        <th>Liczba miejsc</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($event->info as $info)
-                        <tr>
-                            <td>{{ $info->speaker_first_name }}</td>
-                            <td>{{ $info->speaker_last_name }}</td>
-                            <td>{{ $info->title }}</td>
-                            <td>{{ $info->date_start }}</td>
-                            <td>{{ $info->date_end }}</td>
-                            <td>{{ $info->description }}</td>
-                            <td>{{ $info->comments }}</td>
-                            <td>{{ $info->number_seats }}</td>
+            </tr>
+            @if ($event->info->isNotEmpty())
+            <tr class="details">
+                <td colspan="12">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Imię prezentera</th>
+                                <th>Nazwisko prezentera</th>
+                                <th>Tytuł</th>
+                                <th>Data rozpoczęcia</th>
+                                <th>Data zakończenia</th>
+                                <th>Opis</th>
+                                <th>Komentarze</th>
+                                <th>Liczba miejsc</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                             @foreach ($event->info as $info)
-                <td>
-                    <select id="mySelect" onchange="if (this.value) window.location.href = this.value;">
-                    <option value=""disabled selected>Wybierz</option>
-                    <option value="{{ route('event.edit', $event->id) }}">Edycja</option>
-                    <option value="{{ route('event.show', $event->id) }}">Podgląd</option>
-                    <option value="">AM</option>
-                    <option value="">AE</option>
-                    </select>
+                            <tr>
+                                <td>{{ $info->speaker_first_name }}</td>
+                                <td>{{ $info->speaker_last_name }}</td>
+                                <td>{{ $info->title }}</td>
+                                <td>{{ $info->date_start }}</td>
+                                <td>{{ $info->date_end }}</td>
+                                <td>{{ $info->description }}</td>
+                                <td>{{ $info->comments }}</td>
+                                <td>{{ $info->number_seats }}</td>
+                                <td>
+                                    <select id="mySelect" onchange="if (this.value) window.location.href = this.value;">
+                                        <option value="" disabled selected>Wybierz</option>
+                                        <option value="">Edycja</option>
+                                        <option value="">Podgląd</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    Usuwanie
+                                    <button class="btn btn-danger btn-sm delete" data-id="{{ $event->id }}">X</button>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </td>
-                <td>
-                    Usuwanie
-                    <button class="btn btn-danger btn-sm delete" data-id="{{ $event->id }}">X</button>
-                </td>
-                @endforeach
-
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </td>
-    </tr>
-@endif
-                    @endforeach
-                </tbody>
-            </table>
-            {{ $events->links() }}
-        </div>
-    </div>
+            </tr>
+            @endif
+            @endforeach
+        </tbody>
+    </table>
+    {{ $events->links() }}
+</div>
+</div>
 @endsection
+
 
 @section('javascript')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

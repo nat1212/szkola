@@ -28,7 +28,8 @@ class HomeController extends Controller
     public function index()
     {
         $user_id = Auth::id(); 
-        $userEvents = DB::table('events')
+        
+        $results = DB::table('events')
         ->join('event_services', 'events.id', '=', 'event_services.events_id')
         ->join('users', 'users.id', '=', 'event_services.users_id')
         ->select('events.name as event_name', 'users.email', 'event_services.date_start', 'event_services.date_end')
@@ -40,10 +41,15 @@ class HomeController extends Controller
         ->skip(1)
         ->take(15)
         ->get();
-        
+       
+        $userEvents = DB::table('event_services')
+        ->join('events', 'event_services.events_id', '=', 'events.id')
+        ->where('event_services.users_id', $user_id)
+        ->select('events.*')
+        ->get();
         
 
-        return view('home',['userEvents' => $userEvents
+        return view('home',['userEvents' => $userEvents,"results"=>$results
         ]);
     }
     public function changePassword()

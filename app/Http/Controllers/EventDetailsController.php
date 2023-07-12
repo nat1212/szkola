@@ -35,7 +35,8 @@ class EventDetailsController extends Controller
       public function store(Request $request):RedirectResponse
       {
           EventDetails::create($request->all());
-          return redirect('home');
+          
+          return redirect()->route('event.list');
           
       }
 }
