@@ -12,7 +12,7 @@ return new class extends Migration
      * Schema table name to migrate
      * @var string
      */
-    public $tableName = 'participants';
+    public $tableName = 'participants'; 
 
     /**
      * Run the migrations.
@@ -28,13 +28,15 @@ return new class extends Migration
             $table->string('first_name', 45)->nullable()->default(null);
             $table->string('last_name', 45)->nullable()->default(null);
             $table->string('email', 45)->nullable()->default(null);
-            $table->string('password', 45)->nullable()->default(null);
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password',255)->nullable()->default(null);
             $table->string('sex', 45)->nullable()->default(null);
             $table->date('birth_date')->nullable()->default(null);
             $table->string('idu_create', 45)->nullable()->default(null);
             $table->string('idu_mod', 45)->nullable()->default(null);
             $table->string('idu_delete', 45)->nullable()->default(null);
-            $table->integer('dictionary_schools_id')->unsigned()->nullable()->default(null);;
+            $table->integer('dictionary_schools_id')->unsigned()->nullable()->default(null);
+            $table->rememberToken();
             $table->timestamps();
             $table->timestamp('deleted_at')->nullable()->default(null);
 

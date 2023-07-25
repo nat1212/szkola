@@ -24,12 +24,11 @@ class Event extends Model
         'description',
         'date_start',
         'date_end',
-        'date_start_rek',
-        'date_end_rek',
         'date_start_publi',
         'date_end_publi',
         'statuses_id',
     ];
+    
     public function status()
     {
         return $this->belongsTo(EventStatus::class, 'statuses_id');

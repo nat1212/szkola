@@ -31,6 +31,7 @@ return new class extends Migration
             $table->integer('events_id')->unsigned();
             $table->integer('users_id')->unsigned();
             $table->timestamps();
+            $table->timestamp('deleted_at')->nullable()->default(null);
 
             $table->index(["users_role_dictionary_id"]);
 

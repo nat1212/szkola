@@ -36,12 +36,11 @@ return new class extends Migration
             $table->text('description')->nullable()->default(null);
             $table->dateTime('date_start')->nullable()->default(null);
             $table->dateTime('date_end')->nullable()->default(null);
-            $table->dateTime('date_start_rek')->nullable()->default(null);
-            $table->dateTime('date_end_rek')->nullable()->default(null);
             $table->dateTime('date_start_publi')->nullable()->default(null);
             $table->dateTime('date_end_publi')->nullable()->default(null);
           
             $table->timestamps();
+            $table->timestamp('deleted_at')->nullable()->default(null);
 
            
         });

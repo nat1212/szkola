@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 45);
             $table->timestamps();
+            $table->timestamp('deleted_at')->nullable()->default(null);
         });
         Schema::table('events', function (Blueprint $table) {
             $table->unsignedBigInteger('statuses_id')->nullable();

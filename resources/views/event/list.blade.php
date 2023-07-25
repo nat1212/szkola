@@ -108,13 +108,13 @@
                                 <td>
                                     <select id="mySelect" onchange="if (this.value) window.location.href = this.value;">
                                         <option value="" disabled selected>Wybierz</option>
-                                        <option value="">Edycja</option>
+                                        <option value="{{ route('event.edit_details', $info->id) }}">Edycja</option>
                                         <option value="">Podgląd</option>
                                     </select>
                                 </td>
                                 <td>
                                     Usuwanie
-                                    <button class="btn btn-danger btn-sm delete" data-id="{{ $event->id }}">X</button>
+                                    <button class="btn btn-danger btn-sm des" data-id="{{ $info->id }}">X</button>
                                 </td>
                             </tr>
                             @endforeach
@@ -172,7 +172,7 @@ selectElement.addEventListener("blur", function() {
 });
             // Get the CSRF token from the meta tag
             var csrfToken = $('meta[name="csrf-token"]').attr('content');
-
+          
             $('.delete').click(function() {
                 var eventId = $(this).data("id");
                 $.ajax({
@@ -182,6 +182,7 @@ selectElement.addEventListener("blur", function() {
                         'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
                     }
                 })
+                
                 .done(function(response) {
                     alert("Success");
                     window.location.reload();
@@ -190,6 +191,24 @@ selectElement.addEventListener("blur", function() {
                     alert("Error");
                 });
             });
+                $('.des').click(function() {
+        var eventId = $(this).data("id");
+        $.ajax({
+            method: "DELETE",
+            url: "http://szkola.test/event-details/" + eventId,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+            }
+        })
+        .done(function(response) {
+            alert("Success");
+            window.location.reload();
+        })
+        .fail(function(response) {
+            alert("Error");
+    });
+});
         });
     </script>
+   
 @endsection

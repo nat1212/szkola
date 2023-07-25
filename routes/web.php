@@ -39,6 +39,9 @@ Route::get('create', function () {
 Route::get('/event/list',[EventController::class,'index'])->name('event.list')->middleware('auth');
 Route::delete('/event/{id}',[EventController::class,'destroy'])->middleware('auth');
 
+Route::delete('event-details/{id}', [EventDetailsController::class, 'destroy']);
+Route::get('/event/edit_details/{event}',[EventDetailsController::class,'edit'])->name('event.edit_details')->middleware('auth');
+
 Route::get('/event/edit/{event}',[EventController::class,'edit'])->name('event.edit')->middleware('auth');
 Route::get('create',[EventController::class,'create'])->name('create')->middleware('auth');
 Route::get('event/{event}',[EventController::class,'show'])->name('event.show')->middleware('auth');;

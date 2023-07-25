@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('idu_delete', 45)->nullable()->default(null);
             $table->rememberToken();
             $table->timestamps();
+            $table->timestamp('deleted_at')->nullable()->default(null);
         });
     }
 

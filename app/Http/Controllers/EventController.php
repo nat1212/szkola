@@ -13,6 +13,8 @@ use App\Models\EventService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Validator;
 
 
 
@@ -25,13 +27,17 @@ class EventController extends Controller
      */
     public function index():View
     {
-       
-        return view('event.list' ,
-        [
 
-        'events' => Event::paginate(2)
+        $currentDateTime = Carbon::now();
 
-        ]);
+        $events = Event::where('date_start_publi', '<', $currentDateTime)
+                   ->where('date_end_publi', '>', $currentDateTime)
+                   ->whereNull('deleted_at')
+                   ->with(['info' => function ($query) {
+                    $query->whereNull('deleted_at');
+                }])
+                   ->paginate(2);
+        return view('event.list', ['events' => $events]);
     }
     public function permissions(){
         $user_id = Auth::id(); 
@@ -86,6 +92,31 @@ class EventController extends Controller
     public function store(Request $request): RedirectResponse
     {
         
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:45',
+            'shortcut' => 'required|string|max:45',
+            'city' => 'required|string|max:45',
+            'street' => 'required|string|max:45',
+            'zip_code' => 'required|string|max:45',
+            'no_building' => 'nullable|integer',
+            'no_room' => 'nullable|integer',
+            'location_shortcut' => 'nullable|string|max:45',
+            'description' => 'nullable|string',
+            'date_start' => 'required|date',
+            'date_end' => 'required|date|after:date_start',
+            'date_start_publi' => 'required|date|before:date_start',
+            'date_end_publi' => 'required|date|after:date_start_publi|after_or_equal:date_end',
+            'statuses_id' => 'required|integer', 
+        ]);
+
+        if ($validator->fails()) {
+            return redirect('/create')
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+
+        $locationShortcut = $request->input('city') . ', ' . $request->input('street') . ' ' . $request->input('no_building');
+        $request->merge(['location_shortcut' => $locationShortcut]);
         $event = new Event($request->all());
         $event->save();
         $eventService = new EventService();
@@ -142,6 +173,8 @@ class EventController extends Controller
      */
     public function update(Request $request, Event $event) :RedirectResponse
     {
+        $locationShortcut = $request->input('city') . ', ' . $request->input('street') . ' ' . $request->input('no_building');
+        $request->merge(['location_shortcut' => $locationShortcut]);
         $event->fill($request->all());
         $event->save();
         return redirect(route('event.list'));
@@ -155,14 +188,15 @@ class EventController extends Controller
      */
     public function destroy($id)
     {
-        EventDetails::where('events_id', $id)->delete();
-        EventService::where('events_id', $id)->delete();
+        $currentDateTime = Carbon::now();
+
+        EventDetails::where('events_id', $id)->update(['deleted_at' => $currentDateTime]);
+        EventService::where('events_id', $id)->update(['deleted_at' => $currentDateTime]);
+        Event::where('id', $id)->update(['deleted_at' => $currentDateTime]);
         
-        $flight = Event::find($id);
-        $flight -> delete();
 
         return response() -> json([
-            'status' => 'success'
+            'status' => 'Twoje wydarzenie zostło usunięte'
     ]);
 }
 }

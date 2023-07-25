@@ -79,15 +79,7 @@
                              
                             </div>
                         </div>
-                        <div class="row mb-3">
-                            <label for="location_shortcut" class="col-md-4 col-form-label text-md-end">{{ __('Lokalizajca skrot') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="location_shortcut" type="text" class="form-control" name="location_shortcut" value="{{ $event->location_shortcut }}" placeholder="Lokalizajca skrot" required autocomplete="lokalizajca_skrot" autofocus>
-
-                             
-                            </div>
-                        </div>
+                        
                         <div class="row mb-3">
                             <label for="description" class="col-md-4 col-form-label text-md-end">{{ __('Opis wydarzenia') }}</label>
 
@@ -115,24 +107,7 @@
                              
                             </div>
                         </div>
-                        <div class="row mb-3">
-                            <label for="date_start_rek" class="col-md-4 col-form-label text-md-end">{{ __('Data rozpoczęcia rejestracji') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="date_start_rek" type="datetime-local" class="form-control" name="date_start_rek" value="{{ $event->date_start_rek }}" placeholder="Data rozpoczęcia rejestracji" required autocomplete="data_roz_rejestr" autofocus>
-
-                             
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="date_end_rek" class="col-md-4 col-form-label text-md-end">{{ __('Data zakończenia rejestracji') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="date_end_rek" type="datetime-local" class="form-control" name="date_end_rek" value="{{$event->date_end_rek }}" placeholder="Data zakończenia rejestracji" required autocomplete="data_zak_rejestr" autofocus>
-
-                             
-                            </div>
-                        </div>
+                       
                         <div class="row mb-3">
                             <label for="date_start_publi" class="col-md-4 col-form-label text-md-end">{{ __('Data rozpoczęcia publikacji') }}</label>
 

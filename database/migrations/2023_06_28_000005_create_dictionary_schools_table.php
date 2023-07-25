@@ -32,6 +32,7 @@ return new class extends Migration
             $table->string('zip_code', 45)->nullable()->default(null);
             $table->integer('dictionary_sources_id')->unsigned();
             $table->timestamps();
+            $table->timestamp('deleted_at')->nullable()->default(null);
 
             $table->index(["dictionary_sources_id"]);
 
