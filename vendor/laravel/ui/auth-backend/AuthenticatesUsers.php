@@ -6,7 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
-
+use Illuminate\Support\Facades\Log;
 trait AuthenticatesUsers
 {
     use RedirectsUsers, ThrottlesLogins;
@@ -83,6 +83,7 @@ trait AuthenticatesUsers
      */
     protected function attemptLogin(Request $request)
     {
+
         return $this->guard()->attempt(
             $this->credentials($request), $request->boolean('remember')
         );
@@ -129,7 +130,8 @@ trait AuthenticatesUsers
      */
     protected function authenticated(Request $request, $user)
     {
-        //
+        $action = 'zalogował się';
+        Log::channel('php_file')->info('Użytkownik ' . $user->email . ': ' . $action);
     }
 
     /**
@@ -165,6 +167,11 @@ trait AuthenticatesUsers
      */
     public function logout(Request $request)
     {
+        $userId=Auth::id(); 
+        $user=User::find($userId);
+        $action = 'Wylogował się';
+        Log::channel('php_file')->info('Użytkownik ' . $user->email . ': ' . $action );
+
         $this->guard()->logout();
 
         $request->session()->invalidate();

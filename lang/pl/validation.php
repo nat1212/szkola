@@ -140,6 +140,31 @@ return [
         'birth_date' => [
             'before_or_equal' => 'Data musi być datą wcześniejszą lub równą 1 stycznia 2010 r.',
         ],
+        'date_end' => [
+            'after' => 'Data musi być datą późniejszą od daty startu wydarzenia.',
+            'before' => 'Data musi być datą wcześniejszą od daty zakończenia głównego wydarzenia.',
+
+        ],
+        'date_start_publi' => [
+            'before_or_equal' => 'Data musi być datą wcześniejszą lub taką samą jak data startu wydarzenia.',
+        ],
+        'date_end_publi' => [
+            'after' => 'Data musi być datą późniejszą od daty publikacji.',
+            'after_or_equal' => 'Data musi być datą późniejszą lub taką samą jak data zakończenia publikacji.'
+        ],
+        'date_start_publi' => [
+            'before_or_equal' => 'Data musi być datą wcześniejszą lub taką samą jak data startu wydarzenia.',
+        ],
+        'date_start' => [
+            'after_or_equal' => 'Data musi być datą późniejszą lub równą od daty startu wydarzenia.',
+        ],
+        'date_start_rek' => [
+            'before' => 'Data musi być datą wcześniejszą od daty startu wydarzenia.',
+        ],
+        'date_end_rek' => [
+            'after' => 'Data musi być datą późniejszą od daty startu zapisów.',
+            'before' => 'Data musi być datą wcześniejszą od daty startu wydarzenia.',
+        ],
     ],
 
 ];

@@ -4,6 +4,7 @@ use App\Models\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\EventDetailsController;
 use App\Http\Controllers\EventServicesController;
 use Illuminate\Http\Request;
@@ -41,6 +42,7 @@ Route::delete('/event/{id}',[EventController::class,'destroy'])->middleware('aut
 
 Route::delete('event-details/{id}', [EventDetailsController::class, 'destroy']);
 Route::get('/event/edit_details/{event}',[EventDetailsController::class,'edit'])->name('event.edit_details')->middleware('auth');
+Route::post('edit_details/{event}',[EventDetailsController::class,'update'])->name('edit_details.update')->middleware('auth');;
 
 Route::get('/event/edit/{event}',[EventController::class,'edit'])->name('event.edit')->middleware('auth');
 Route::get('create',[EventController::class,'create'])->name('create')->middleware('auth');
@@ -59,9 +61,17 @@ Route::post('/create2',[EventDetailsController::class,'store']);
 
 Route::get('/addMember/{id}',[EventServicesController::class,'addMember'])->name('addMember')->middleware('auth');
 Route::post('/addMember',[EventServicesController::class,'store']);
+Route::delete('event-services/{id}', [EventServicesController::class, 'destroy']);
+
+Route::get('/user/edit/{id}', [UserController::class, 'edit'])->name('user.edit');
+Route::post('/user/update/first_name/{id}', [UserController::class, 'updateFirstName'])->name('user.updateFirstName');
+Route::post('/user/update/last_name/{id}', [UserController::class, 'updateLastName'])->name('user.updateLastName');
+Route::get('/events/search', [EventController::class,'search'])->name('events.search');
+Route::get('/user_list',[EventController::class,'user_list'])->name('user_list')->middleware('auth');
 
 Auth::routes(['verify'=>true]);
 Route::get('/change-password', [App\Http\Controllers\HomeController::class, 'changePassword'])->name('change-password');
+Route::get('/zmien-haslo', [App\Http\Controllers\HomeController::class, 'zmienHaslo'])->name('zmien-haslo');
 Route::post('/change-password', [App\Http\Controllers\HomeController::class, 'updatePassword'])->name('update-password');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

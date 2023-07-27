@@ -8,14 +8,31 @@
                 <div class="card-header">{{ __('Dodaj kumpla') }}</div>
 
                 <div class="card-body">
+                @if($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                     <form method="POST" action="/addMember">
                         @csrf
-
+                        <input id="events_start" type="hidden" value="{{ $date->date_start }}" class="form-control" name="event_start" required autofocus>
+                        
+                       
+                        <input id="events_end" type="hidden" value="{{ $date->date_end }}" class="form-control" name="event_end" required autofocus>
                         <div class="row mb-3">
                             <label for="date_start" class="col-md-4 col-form-label text-md-end">{{ __('Data początku uprawnień') }}</label>
 
                             <div class="col-md-6">
-                                <input id="date_start" type="date" class="form-control" name="date_start"  required  autofocus>
+                                <input id="date_start" type="datetime-local" class="form-control @error('date_start') is-invalid @enderror" name="date_start"  required  autofocus>
+                                @error('date_start')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
                         </div>
 
@@ -23,7 +40,12 @@
                             <label for="date_end" class="col-md-4 col-form-label text-md-end">{{ __('Data zakończenia uprawnień') }}</label>
 
                             <div class="col-md-6">
-                                <input id="date_end" type="date" class="form-control" name="date_end"  required  autofocus>
+                                <input id="date_end" type="datetime-local" class="form-control @error('date_end') is-invalid @enderror" name="date_end"  required  autofocus>
+                                @error('date_end')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
                         </div>
 
@@ -38,8 +60,9 @@
                                     @endif
                                 @endforeach
                             </select>
-                            <div id="role-description"></div>
+                            <div id="role-description" ></div>
                         </div>
+                        
                         </div>
                         
 
@@ -103,7 +126,7 @@
         } else if (roleId === '2') {
             roleDescription = 'Możliwa edycja/dodanie/usunęcie pod wydarzenia.Nie możliwe usunięcie wydarzenia oraz dodanie innych uczestników';
         } else if (roleId === '3') {
-            roleDescription = 'Nie możliwa edycja głównego wydarzenia ani usunięcie';
+            roleDescription = 'Nie możliwa praca nad głównym wydarzeniem.Możliwa praca na pod wydarzeniami';
         }
         // Dodaj więcej warunków, jeśli masz więcej ról
 

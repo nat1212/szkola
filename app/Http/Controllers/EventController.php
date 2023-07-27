@@ -15,34 +15,71 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 
 
 class EventController extends Controller
 {
+
+
+
+    private function validateEventData(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:45',
+            'shortcut' => 'required|string|max:45',
+            'city' => 'required|string|max:45',
+            'street' => 'required|string|max:45',
+            'zip_code' => 'required|string|max:45',
+            'no_building' => 'nullable|integer',
+            'no_room' => 'nullable|integer',
+            'location_shortcut' => 'nullable|string|max:45',
+            'description' => 'nullable|string',
+            'date_start' => 'required|date',
+            'date_end' => 'required|date|after:date_start',
+            'date_start_publi' => 'required|date|before_or_equal:date_start',
+            'date_end_publi' => 'required|date|after:date_start_publi|after_or_equal:date_end',
+            'statuses_id' => 'required|integer', 
+        ]);
+   
+    
+        return $validator;
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index():View
+    public function index(Request $request):View
     {
 
         $currentDateTime = Carbon::now();
+        $specificEventId = null;
+
+        if ($request->has('specific_event_id')) {
+            $specificEventId = $request->input('specific_event_id');
+        }
 
         $events = Event::where('date_start_publi', '<', $currentDateTime)
                    ->where('date_end_publi', '>', $currentDateTime)
                    ->whereNull('deleted_at')
+                   ->where('statuses_id',1)
                    ->with(['info' => function ($query) {
                     $query->whereNull('deleted_at');
-                }])
+                }])//po co to bylo xD
                    ->paginate(2);
-        return view('event.list', ['events' => $events]);
+        return view('event.list', ['events' => $events,'specificEventId' => $specificEventId]);
     }
     public function permissions(){
         $user_id = Auth::id(); 
+        $currentDateTime = Carbon::now();
         $usersRoleId = DB::table('event_services')
         ->where('users_id', $user_id)
+        ->where('date_start', '<', $currentDateTime)
+        ->where('date_end', '>', $currentDateTime)
+        ->whereNull('deleted_at')
         ->value('users_role_dictionary_id');
         if ($usersRoleId == 1){
             return 1;
@@ -52,8 +89,11 @@ class EventController extends Controller
          
             return 2;
         }  
-        else{
+        elseif($usersRoleId==3){
             return 3;
+        }
+        else{
+            return 4;
         }
 
     }
@@ -82,6 +122,45 @@ class EventController extends Controller
             'statuses'=>EventStatus::all()
           ]);
     }
+    public function user_list()
+    {
+        
+        $user_id = Auth::id(); 
+        $currentDateTime = Carbon::now();
+
+        $userEvents = DB::table('event_services')
+        ->join('events', 'event_services.events_id', '=', 'events.id')
+        ->where('event_services.users_id', $user_id)
+        ->whereNull('event_services.deleted_at')
+        ->where('event_services.date_start', '<', $currentDateTime)
+        ->where('event_services.date_end', '>', $currentDateTime)
+        ->select('events.*')
+        ->get();
+
+
+        $results = DB::table('events')
+        ->join('event_services', 'events.id', '=', 'event_services.events_id')
+        ->join('users', 'users.id', '=', 'event_services.users_id')
+        ->select('event_services.id','event_services.users_role_dictionary_id','events.name as event_name', 'users.email', 'event_services.date_start', 'event_services.date_end')
+        ->whereIn('event_services.events_id', function ($query) use ($user_id) {
+            $query->select('events_id')
+                ->from('event_services')
+                ->where('users_id', $user_id);
+        })
+        ->whereNull('event_services.deleted_at')
+        ->where('event_services.date_start', '<', $currentDateTime)
+        ->where('event_services.date_end', '>', $currentDateTime)
+        ->where('users_id', '!=', $user_id)
+        ->take(15)
+        ->get();
+
+        $events = EventDetails::all();
+        return view('user_list',[
+            'userEvents'=>$userEvents,
+            'results'=>$results,
+            'event'=>$events,
+          ]);
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -92,25 +171,11 @@ class EventController extends Controller
     public function store(Request $request): RedirectResponse
     {
         
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:45',
-            'shortcut' => 'required|string|max:45',
-            'city' => 'required|string|max:45',
-            'street' => 'required|string|max:45',
-            'zip_code' => 'required|string|max:45',
-            'no_building' => 'nullable|integer',
-            'no_room' => 'nullable|integer',
-            'location_shortcut' => 'nullable|string|max:45',
-            'description' => 'nullable|string',
-            'date_start' => 'required|date',
-            'date_end' => 'required|date|after:date_start',
-            'date_start_publi' => 'required|date|before:date_start',
-            'date_end_publi' => 'required|date|after:date_start_publi|after_or_equal:date_end',
-            'statuses_id' => 'required|integer', 
-        ]);
+    
+        $validator = $this->validateEventData($request);
 
         if ($validator->fails()) {
-            return redirect('/create')
+            return redirect()->back()
                         ->withErrors($validator)
                         ->withInput();
         }
@@ -121,6 +186,12 @@ class EventController extends Controller
         $event->save();
         $eventService = new EventService();
         $eventService->save();
+
+        $id=Auth::id(); 
+        $user=User::find($id);
+        $action = 'Utworzył wydarzenie';
+        Log::channel('php_file')->info('Użytkownik ' . $user->email . ': ' . $action);
+
         return redirect(route('event.list'));
         
     }
@@ -173,10 +244,24 @@ class EventController extends Controller
      */
     public function update(Request $request, Event $event) :RedirectResponse
     {
+        $validator = $this->validateEventData($request);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+        
         $locationShortcut = $request->input('city') . ', ' . $request->input('street') . ' ' . $request->input('no_building');
         $request->merge(['location_shortcut' => $locationShortcut]);
         $event->fill($request->all());
         $event->save();
+
+        $id=Auth::id(); 
+        $user=User::find($id);
+        $action = 'Edytował wydarzenie o id';
+        Log::channel('php_file')->info('Użytkownik ' . $user->email . ': ' . $action.': '.$event->id );
+
         return redirect(route('event.list'));
     }
 
@@ -188,17 +273,28 @@ class EventController extends Controller
      */
     public function destroy($id)
     {
-        $currentDateTime = Carbon::now();
+        $hasPermission = $this->permissions();
+        if($hasPermission==1){
+            $currentDateTime = Carbon::now();
 
-        EventDetails::where('events_id', $id)->update(['deleted_at' => $currentDateTime]);
-        EventService::where('events_id', $id)->update(['deleted_at' => $currentDateTime]);
-        Event::where('id', $id)->update(['deleted_at' => $currentDateTime]);
-        
+            EventDetails::where('events_id', $id)->update(['deleted_at' => $currentDateTime]);
+            EventService::where('events_id', $id)->update(['deleted_at' => $currentDateTime]);
+            Event::where('id', $id)->update(['deleted_at' => $currentDateTime]);
+            $userId=Auth::id(); 
+            $user=User::find($userId);
+            $action = 'Usunął wydarzenie o id';
+            Log::channel('php_file')->info('Użytkownik ' . $user->email . ': ' . $action.': '.$id );
 
-        return response() -> json([
-            'status' => 'Twoje wydarzenie zostło usunięte'
+            return response() -> json([
+                'status' => 'Twoje wydarzenie zostło usunięte'
     ]);
-}
+    }
+    else{
+        $error = 'Nie masz uprawnień do usunięcia.';
+        return redirect()->route('event.list')->withErrors(['message' => $error]);
+
+    }
+    }
 }
 
 

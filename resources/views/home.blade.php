@@ -29,10 +29,15 @@
                 <td colspan="12">
                     <table class="table table-striped">
                             <tr>
+                            
                             @foreach ($results as $result)
                             <td>{{ $result->email }}</td>
                             <td>{{ $result->date_start }}</td>
                             <td>{{ $result->date_end }}</td>
+                            <td>{{ $result->users_role_dictionary_id }}</td>
+                            @if($roles==1)
+                            <td><button class="btn btn-danger btn-sm del" data-id="{{ $result->id }}">X</button></td>
+                            @endif
                             @endforeach
                             </tr>
                     </table>
@@ -43,3 +48,28 @@
     </div>
 </div>
 @endsection
+@section('javascript')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js%22%3E"></script>
+    <script>
+var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+          $('.del').click(function() {
+              var eventId = $(this).data("id");
+              $.ajax({
+                  method: "DELETE",
+                  url: "http://szkola.test/event-services/" + eventId,
+                  headers: {
+                      'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+                  }
+              })
+
+              .done(function(response) {
+                  alert("Success");
+                  window.location.reload();
+              })
+              .fail(function(response) {
+                  alert("Error");
+              });
+          });
+          </script>
+          @endsection

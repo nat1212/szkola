@@ -22,6 +22,8 @@ class EventDetails extends Model
         'comments',
         'number_seats',
         'events_id',
+        'date_start_rek',
+        'date_end_rek',
         ];
       
     public function event()

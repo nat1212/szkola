@@ -65,7 +65,7 @@
                         <option value="" disabled selected>Wybierz</option>
                         <option value="{{ route('event.edit', $event->id) }}">Edycja</option>
                         <option value="{{ route('event.show', $event->id) }}">Podgląd</option>
-                        <option value="">AM</option>
+                        <option value="{{ route('addMember', $event->id)}}">AM</option>
                         <option value="{{ route('create2', $event->id)}}">AE</option>
 
 

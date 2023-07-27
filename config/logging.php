@@ -117,6 +117,12 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+        'php_file' => [
+            'driver' => 'custom',
+            'via' => App\Logging\PhpFileLogger::class,
+            'path' => storage_path('logs/php_logs'), 
+            'level' => 'info', 
+        ],
     ],
 
 ];
