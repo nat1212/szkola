@@ -82,6 +82,31 @@ class EventServicesController extends Controller
           return redirect('home');
           
       }
+      public function updateData(Request $request, $id)
+    {
+        // Walidacja danych
+        $validatedData = $request->validate([
+            'date_start' => 'required|date',
+            'date_end' => 'required|date',
+            'selected_role' => 'required|numeric',
+            // Dodaj inne pola do walidacji
+        ]);
+
+        // Pobierz rekord do aktualizacji
+        $record = EventService::find($id);
+
+        // Aktualizuj dane rekordu
+        $record->date_start = $validatedData['date_start'];
+        $record->date_end = $validatedData['date_end'];
+        $record->users_role_dictionary_id = $validatedData['selected_role'];
+        // Aktualizuj inne pola
+
+        // Zapisz zmiany w bazie danych
+        $record->save();
+
+        return redirect()->back()->with('success', 'Dane zostały zaktualizowane.');
+    }
+
       public function destroy($id)
     {
         $currentDateTime = Carbon::now();
@@ -98,6 +123,8 @@ class EventServicesController extends Controller
             'status' => 'Twoje wydarzenie zostło usunięte'
     ]);
   }
+
+
 
     
 }

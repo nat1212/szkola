@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\EventDetails;
 use App\Models\EventStatus;
 use App\Models\EventService;
+use App\Models\UserRole;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
@@ -70,6 +71,24 @@ class EventController extends Controller
                     $query->whereNull('deleted_at');
                 }])//po co to bylo xD
                    ->paginate(2);
+        
+
+ 
+                   foreach ($events as $event) {
+                    $event->date_start = Carbon::parse($event->date_start);
+                    $event->date_end = Carbon::parse($event->date_end);
+                    $event->date_start_rek = Carbon::parse($event->date_start_rek);
+                    $event->date_end_rek = Carbon::parse($event->date_end_rek);
+            
+                    foreach($event->info as $info)
+                    {
+                        $info->date_start = Carbon::parse($info->date_start);
+                        $info->date_end = Carbon::parse($info->date_end);
+                        $info->date_start_rek = Carbon::parse($info->date_start_rek);
+                        $info->date_end_rek = Carbon::parse($info->date_end_rek);
+                        
+                    }}
+        
         return view('event.list', ['events' => $events,'specificEventId' => $specificEventId]);
     }
     public function permissions(){
@@ -122,23 +141,48 @@ class EventController extends Controller
             'statuses'=>EventStatus::all()
           ]);
     }
+    public function event_info(Event $event) : View
+    {   
+      
+        return view('event_info',[
+           'events'=>$event
+          ]);
+    }
     public function user_list()
     {
-        
         $user_id = Auth::id(); 
         $currentDateTime = Carbon::now();
+        
 
         $userEvents = DB::table('event_services')
-        ->join('events', 'event_services.events_id', '=', 'events.id')
         ->where('event_services.users_id', $user_id)
-        ->whereNull('event_services.deleted_at')
-        ->where('event_services.date_start', '<', $currentDateTime)
-        ->where('event_services.date_end', '>', $currentDateTime)
-        ->select('events.*')
-        ->get();
+        ->whereNull('event_services.deleted_at') 
+        ->pluck('events_id');
+
+        $events = Event::whereIn('id', $userEvents)
+    ->with(['info' => function ($query) {
+        $query->whereNull('deleted_at');
+    }])
+    ->get();
+    foreach ($events as $event) {
+        $event->date_start = Carbon::parse($event->date_start);
+        $event->date_end = Carbon::parse($event->date_end);
+        $event->date_start_rek = Carbon::parse($event->date_start_rek);
+        $event->date_end_rek = Carbon::parse($event->date_end_rek);
+        $event->date_start_publi =Carbon::parse($event->date_start_publi);
+        $event->date_end_publi =Carbon::parse($event->date_end_publi);
+
+        foreach($event->info as $info)
+        {
+            $info->date_start = Carbon::parse($info->date_start);
+            $info->date_end = Carbon::parse($info->date_end);
+            $info->date_start_rek = Carbon::parse($info->date_start_rek);
+            $info->date_end_rek = Carbon::parse($info->date_end_rek);
+            
+        }}
 
 
-        $results = DB::table('events')
+     /* $results = DB::table('events')
         ->join('event_services', 'events.id', '=', 'event_services.events_id')
         ->join('users', 'users.id', '=', 'event_services.users_id')
         ->select('event_services.id','event_services.users_role_dictionary_id','events.name as event_name', 'users.email', 'event_services.date_start', 'event_services.date_end')
@@ -152,13 +196,15 @@ class EventController extends Controller
         ->where('event_services.date_end', '>', $currentDateTime)
         ->where('users_id', '!=', $user_id)
         ->take(15)
-        ->get();
+        ->get();*/
 
-        $events = EventDetails::all();
+
+    
+
+       
         return view('user_list',[
-            'userEvents'=>$userEvents,
-            'results'=>$results,
-            'event'=>$events,
+            'userEvents' => $events,
+            //"results"=>$results,
           ]);
     }
 
@@ -192,7 +238,7 @@ class EventController extends Controller
         $action = 'Utworzył wydarzenie';
         Log::channel('php_file')->info('Użytkownik ' . $user->email . ': ' . $action);
 
-        return redirect(route('event.list'));
+        return redirect(route('user_list'));
         
     }
 
@@ -204,8 +250,32 @@ class EventController extends Controller
      */
     public function show(Event $event):View
     {
+        $result = DB::table('event_services')
+        ->where('events_id', $event->id)
+        ->whereNull('event_services.deleted_at')
+        ->join('users', 'event_services.users_id', '=', 'users.id')
+        ->join('users_role_dictionary', 'event_services.users_role_dictionary_id', '=', 'users_role_dictionary.id')
+        ->select(
+            'event_services.id',
+            'event_services.date_start',
+            'event_services.date_end',
+            'event_services.users_role_dictionary_id',
+            'users_role_dictionary.name as role_name',
+            'users.first_name',
+            'users.last_name',
+            'users.email'
+        )
+        ->skip(1)
+        ->take(PHP_INT_MAX)
+        ->get();
+
+        $eventDetails = $event->info;
         return view("event.show", [
-            'event' => $event
+            'event' => $event,
+            'result'=> $result,
+            'eventDetails' => $eventDetails,
+            'statuses' => EventStatus::all(),
+            'roles' =>UserRole::all(),
         ]);
     }
 
@@ -234,7 +304,47 @@ class EventController extends Controller
         
         
     }
+    public function search(Request $request)
+    {
+        $searchTerm = $request->input('search_name');
+    
+        $currentDateTime = Carbon::now();
+    
+        $events = Event::where('date_start_publi', '<', $currentDateTime)
+                       ->where('date_end_publi', '>', $currentDateTime)
+                       ->whereNull('deleted_at')
+                       ->where('statuses_id', 1)
+                       ->where('name', 'LIKE', "%{$searchTerm}%")
+                       ->orderBy('date_start', 'asc')
+                       ->paginate(2);
+    
+        
+    
+    foreach ($events as $event) {
+        $event->date_start = Carbon::parse($event->date_start);
+        $event->date_end = Carbon::parse($event->date_end);
+        $event->date_start_rek = Carbon::parse($event->date_start_rek);
+        $event->date_end_rek = Carbon::parse($event->date_end_rek);
 
+        foreach($event->info as $info)
+        {
+            $info->date_start = Carbon::parse($info->date_start);
+            $info->date_end = Carbon::parse($info->date_end);
+            $info->date_start_rek = Carbon::parse($info->date_start_rek);
+            $info->date_end_rek = Carbon::parse($info->date_end_rek);
+        }
+
+    }
+    
+        
+    
+    
+        return view('event.list', [
+            'events' => $events,
+            'searchTerm' => $searchTerm,
+
+        ]);
+    }
     /**
      * Update the specified resource in storage.
      *
@@ -262,7 +372,7 @@ class EventController extends Controller
         $action = 'Edytował wydarzenie o id';
         Log::channel('php_file')->info('Użytkownik ' . $user->email . ': ' . $action.': '.$event->id );
 
-        return redirect(route('event.list'));
+        return redirect(route('user_list'));
     }
 
     /**
@@ -291,7 +401,7 @@ class EventController extends Controller
     }
     else{
         $error = 'Nie masz uprawnień do usunięcia.';
-        return redirect()->route('event.list')->withErrors(['message' => $error]);
+        return redirect()->route('user_list')->withErrors(['message' => $error]);
 
     }
     }

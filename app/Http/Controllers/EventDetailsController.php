@@ -82,7 +82,7 @@ class EventDetailsController extends Controller
         $action = 'Utworzył pod wydarzenie dla wydarzenia o id';
         Log::channel('php_file')->info('Użytkownik ' . $user->email . ': ' . $action.': '.$request->events_id );
           
-        return redirect()->route('event.list');
+        return redirect()->route('user_list');
           
       }
 

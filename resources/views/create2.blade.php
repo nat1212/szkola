@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Wydarzenie_detale') }}</div>
+                <div class="card-header">{{ __('Podwydarzenie') }}</div>
 
                 <div class="card-body">
                     <form method="POST" action="/create2">
@@ -38,7 +38,7 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="title" class="col-md-4 col-form-label text-md-end">{{ __('tytul') }}</label>
+                            <label for="title" class="col-md-4 col-form-label text-md-end">{{ __('Tytuł') }}</label>
 
                             <div class="col-md-6">
                                 <input id="title" type="text"  class="form-control @error('title') is-invalid @enderror" name="title" value="{{ old('title') ?? session('title') }}" required autocomplete="title" autofocus>
@@ -49,7 +49,12 @@
                                 @enderror
                             </div>
                         </div>
-                    
+                        <div class="row mb-3">
+                            <label for="date_start" class="col-md-4 col-form-label text-md-end">{{ __('Data wydarzenia głównego') }}</label>
+                            <div class="col-md-6">
+                            <input id="events_start"  value="{{$event->date_start . ' - ' . $event->date_end}}" class="form-control" name="event_start" required autofocus>
+                            </div>                        
+                        </div>
                                 <input id="events_start" type="hidden" value="{{ $event->date_start }}" class="form-control" name="event_start" required autofocus>
                         
                        
@@ -154,7 +159,7 @@
                            
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
-                                    {{ __('Stwórz') }}
+                                    {{ __('Dodaj podwydarzenie') }}
                                 </button>
                             </div>
                         </div>

@@ -64,6 +64,8 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href = "{{ route('home') }}">Profil</a>
+                                    <a class="dropdown-item" href = "{{ route('user_list') }}">Twoje wydarzenia</a>
                                     <a class="dropdown-item" href = "{{ route('event.list') }}">Wydarzenia</a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();

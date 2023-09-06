@@ -6,7 +6,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EventDetailsController;
+use App\Http\Controllers\EventParticipantController;
 use App\Http\Controllers\EventServicesController;
+use App\Models\EventService;
 use Illuminate\Http\Request;
 
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -38,7 +40,7 @@ Route::get('create', function () {
 
 
 Route::get('/event/list',[EventController::class,'index'])->name('event.list')->middleware('auth');
-Route::delete('/event/{id}',[EventController::class,'destroy'])->middleware('auth');
+Route::delete('/event/{id}',[EventController::class,'destroy']);
 
 Route::delete('event-details/{id}', [EventDetailsController::class, 'destroy']);
 Route::get('/event/edit_details/{event}',[EventDetailsController::class,'edit'])->name('event.edit_details')->middleware('auth');
@@ -55,12 +57,19 @@ Route::get('list',[EventController::class,'show']);
 
 Route::get('event/{id}',[EventController::class,'showall']);
 
+Route::post('/update/{id}', [EventServicesController::class,'updateData'])->name('updateData');
+
+
+
+
+
 //Route::get('/create2',[EventDetailsController::class,'create2']);
 Route::get('/create2/{id}',[EventDetailsController::class,'create2'])->name('create2')->middleware('auth');
 Route::post('/create2',[EventDetailsController::class,'store']);
 
 Route::get('/addMember/{id}',[EventServicesController::class,'addMember'])->name('addMember')->middleware('auth');
 Route::post('/addMember',[EventServicesController::class,'store']);
+
 Route::delete('event-services/{id}', [EventServicesController::class, 'destroy']);
 
 Route::get('/user/edit/{id}', [UserController::class, 'edit'])->name('user.edit');
@@ -73,6 +82,15 @@ Auth::routes(['verify'=>true]);
 Route::get('/change-password', [App\Http\Controllers\HomeController::class, 'changePassword'])->name('change-password');
 Route::get('/zmien-haslo', [App\Http\Controllers\HomeController::class, 'zmienHaslo'])->name('zmien-haslo');
 Route::post('/change-password', [App\Http\Controllers\HomeController::class, 'updatePassword'])->name('update-password');
+
+Route::get('/user/edit/{id}', [UserController::class, 'edit'])->name('user.edit');
+Route::post('/user/{id}/update', [UserController::class, 'updateProfile'])->name('user.updateProfile');
+
+Route::get('event_info/{id}',[EventController::class,'event_info'])->name('event_info')->middleware('auth');
+
+Route::get('/zapisz/{id}',[EventParticipantController::class,'zapisz'])->name('zapisz');
+Route::get('/list/{id}',[EventParticipantController::class,'list'])->name('list');
+Route::post('/zapisz',[EventParticipantController::class,'store']);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 

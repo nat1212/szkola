@@ -2,6 +2,7 @@
 
 @section('styles')
 <link rel="stylesheet" href="{{asset('css/list3.css')}}">
+<link rel="stylesheet" href="{{asset('css/footer.css')}}">
 @endsection
 
 @section('content')
@@ -20,14 +21,7 @@
         </ul>
     </div>
 @endif
-    <div class="row3">
-    <div class="col-10">
-        <form action="{{ route('events.search') }}" method="GET" class="d-flex align-items-center">
-            <input type="text" class="form-control" name="search_name" placeholder="Szukaj po nazwie" value="" autocomplete="off">
-            <button type="submit" class="btn btn-primary">Szukaj</button>
-        </form>
-    </div>
-</div>
+
 
 
 @foreach ($userEvents as $event)
@@ -45,34 +39,28 @@
          
             <div>
             </table>
-            <div class="select-container">
-        <select id="mySelect" onchange="if (this.value) window.location.href = this.value;">
-            <option value="" disabled selected>Wybierz</option>
-            <option value="{{ route('event.edit', $event->id) }}">Edycja</option>
-            <option value="{{ route('addMember', $event->id)}}">AM</option>">Dodaj kumpla</option>
-            <option value="{{ route('create2', $event->id)}}">Dodaj podwydarzenie</option>
-            <option value="delete" data-id="{{ $event->id }}">Usuń wydarzenie</option>
-        </select>
-    </div>
+           
  
             <div class="des-row">
-            <div class="left-content">
+            <div class="right-content">
+            <div class="des-row">
             
+            </div>
             <div class="des-row">
                     <p scope="col" class="des " >Data rozpoczęcia wydarzenia:</p>
-                    <p scope="col" class="des2 ">{{ $event->date_start }}</p>
+                    <p scope="col" class="des2 ">{{$event->date_start->format('Y-m-d') }} {{ $event->date_start->format('H:i') }}</p>
             </div>
             <div class="des-row">
                     <p scope="col" class="des" >Data zakończenia wydarzenia:</p>
-                    <p scope="col" class="des2" >{{ $event->date_end }}</p>
+                    <p scope="col" class="des2" >{{ $event->date_end->format('Y-m-d') }} {{ $event->date_end->format('H:i') }}</p>
+            </div>
+           <div class="des-row">
+                    <p scope="col" class="des" >Rozpoczęcie publikacji:</p>
+                    <p scope="col" class="des2" >{{$event->date_start_publi->format('Y-m-d') }} {{$event->date_start_publi->format('H:i') }}</p>
             </div>
             <div class="des-row">
-                    <p scope="col" class="des" >Rozpoczęcie rekrutacji:</p>
-                    <p scope="col" class="des2" >{{ $event->date_start_rek }}</p>
-            </div>
-            <div class="des-row">
-                    <p scope="col" class="des" >Zakończenie rekrutacji:</p>
-                    <p scope="col" class="des2">{{ $event->date_end_rek }}</p>
+                    <p scope="col" class="des" >Zakończenie publikacji:</p>
+                    <p scope="col" class="des2">{{$event->date_end_publi->format('Y-m-d') }} {{$event->date_end_publi->format('H:i') }}</p>
             </div>      
             <div class="des-row">
    
@@ -116,54 +104,49 @@
 
   <div class="container">
     <div class="grid">
-    @foreach ($results as $result)
+   
+    @foreach ($event->info as $info)
 
-    <select id="mySelect" onchange="if (this.value) window.location.href = this.value;">
-             <option value="" disabled selected>Wybierz</option>
-             <option value="{{ route('event.edit_details', $results->id) }}">Edycja</option>                           
-    </select>
+ 
 
-      <div class="event-wrapper">
+      <div class="event-wrapper" data-description="{{ $info->description }}">
         <div class="event"> 
           <div class="text">
-            <p scope="col" class="des7">{{ $result->title }}</p>
+            <p scope="col" class="des7"> {{$info->title }}</p>
+            <div class="des-row2">
+              <p scope="col" class="des3">Prowadzący:</p>
+              <p scope="col" class="des4">{{ $info->speaker_first_name }} {{ $info->speaker_last_name }}</p>
+
+            </div>
             <div class="des-row2">
               <p scope="col" class="des3">Data rozpoczęcia wydarzenia:</p>
-              <p scope="col" class="des4">{{ $result->date_start }}</p>
+              <p scope="col" class="des4"> {{ $info->date_start->format('Y-m-d') }} {{  $info->date_start->format('H:i') }} </p>
             </div>
             <div class="des-row2">
               <p scope="col" class="des3">Data zakończenia wydarzenia:</p>
-              <p scope="col" class="des4">{{ $result->date_end }}</p>
+              <p scope="col" class="des4"> {{ $info->date_end->format('Y-m-d') }} {{ $info->date_end->format('H:i') }}</p>
             </div>
             <div class="des-row2">
               <p scope="col" class="des3">Ilość miejsc: {{ $info->number_seats }}</p>
             </div>
             <div class="btn-container">
             @if ($event->info->isNotEmpty())         
-              <button class="btn show-sub-events" data-info-id="{{ $results->id }}">Pokaż szczegóły</button>
+              <button class="btn show-sub-events" data-info-id="{{ $info->id }}">Pokaż szczegóły</button>
+              <a href="{{ route('event.edit_details', $info->id) }}" style="width:50px "class="btn btn-danger">Edycja</a>
+              <button data-id="{{ $info->id }}"  style="width:50px " class="btn btn-danger des" >Usuń</button>
+              <a href="{{ route('zapisz', $info->id) }}" style="width:50px "class="btn btn-danger">Zapisz</a>
+              <a href="{{ route('list', $info->id) }}" style="width:50px "class="btn btn-danger">Lista</a>
               @else
-              <button class="btn show-sub-events" data-info-id="{{ $results->id }}" disabled>></button>
+              <button class="btn show-sub-events" data-info-id="{{ $info->id }}" disabled>></button>
                     @endif
             </div>
           </div>
   
-          <div class="sub-events" style="display:none;">
-            <div class="des-row2">
-              <p scope="col" class="des3">Imię prowadzącego:</p>
-              <p scope="col" class="des4">{{ $result->speaker_first_name }}</p>
-            </div>
-            <div class="des-row2">
-              <p scope="col" class="des3">Nazwisko prowadzącego:</p>
-              <p scope="col" class="des4">{{ $result->speaker_last_name }}</p>
-            </div>
-            <div class="des-row2">
-              <p scope="col" class="des3">Opis:</p>
-              <p scope="col" class="des4">{{ $result->description }}</p>
-            </div>
-          </div>
+         
         </div>
       </div>
       @endforeach
+     
     </div>
   </div>
 </div>
@@ -171,17 +154,85 @@
 
                 <div class="d-flex justify-content-end align-items-center">
                     <button class="btn btn-primary expand-button ">Pokaż wydarzenia</button>
-                    <button class="btn btn-primary details-button" data-event-id="{{ $event->id }}">Pokaż szczegóły</button>
+                      <a  href="{{ route('event.show', $event->id) }}" ><button class="btn btn-primary">Pokaż szczegóły</button></a>
+                      <a style="margin-right:5px"href="{{ route('event.edit', $event->id) }}" class="btn btn-danger">Edycja</a>
+              <a  style="margin-right:5px"href="{{ route('addMember', $event->id)}}" class="btn btn-danger" >Dodaj współpracownika</a>
+              <a style="margin-right:5px"href="{{ route('create2', $event->id)}}" class="btn btn-danger" >Dodaj podwydarzenie</a>
+              
+  
+
+              <button class="btn btn-danger del" data-id="{{ $event->id }}">Usuń</button>
+
                 </div>
              
             </div>
         </div>
+        <div id="agreed22" class="dialog" style="display: none;">
+    <div class="dialog-content">
+        <p id="dese">Opis wydarzenia:</p>
+        <p id="eve_dese"></p>
+        <button id="cancel-button">Wróć</button>
     </div>
-    @endforeach
-
-    {{ $events->links() }}
 </div>
+        @endforeach
+    </div>
+ 
+    
 
+   
+</div>
+<div class="footer">
+    <p class="footer-text">@Sławek&Natan Company</p>
+    </div>
+   
+   
+@endsection
+@section('javascript')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js%22%3E"></script>
+    <script>
+var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+          $('.del').click(function() {
+              var eventId = $(this).data("id");
+              $.ajax({
+                  method: "DELETE",
+                  url: "http://szkola.test/event/" + eventId,
+                  headers: {
+                      'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+                  }
+              })
+
+              .done(function(response) {
+                  alert("Success");
+                  window.location.reload();
+              })
+              .fail(function(response) {
+                  alert("Error");
+              });
+          });
+          </script>
+             <script>
+var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+          $('.des').click(function() {
+              var eventId = $(this).data("id");
+              $.ajax({
+                  method: "DELETE",
+                  url: "http://szkola.test/event-details/" + eventId,
+                  headers: {
+                      'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+                  }
+              })
+
+              .done(function(response) {
+                  alert("Success");
+                  window.location.reload();
+              })
+              .fail(function(response) {
+                  alert("Error");
+              });
+          });
+          </script>
 
 
 <script>
@@ -259,8 +310,6 @@
 
  
 </script>
-@endsection
-@section('javascript')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         jQuery(function($) {
@@ -305,7 +354,7 @@ selectElement.addEventListener("blur", function() {
                 var eventId = $(this).data("id");
                 $.ajax({
                     method: "DELETE",
-                    url: "http://szkola.test/event/" + eventId,
+                    url: "http://szkola.test/user_list" + eventId,
                     headers: {
                         'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
                     }
@@ -323,7 +372,7 @@ selectElement.addEventListener("blur", function() {
         var eventId = $(this).data("id");
         $.ajax({
             method: "DELETE",
-            url: "http://szkola.test/event-details/" + eventId,
+            url: "http://szkola.test/user_list/" + eventId,
             headers: {
                 'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
             }
@@ -337,6 +386,52 @@ selectElement.addEventListener("blur", function() {
     });
 });
         });
+        document.addEventListener('DOMContentLoaded', function() {
+      
+      var showDetailsButtons = document.querySelectorAll('.show-sub-events');
+
+      showDetailsButtons.forEach(function(button) {
+          button.addEventListener('click', function() {
+              var dialog = document.getElementById('agreed22');
+              dialog.style.display = 'flex'; 
+              var description = this.closest('.event-wrapper').getAttribute('data-description');
+          var descriptionElement = document.getElementById('eve_dese');
+          descriptionElement.textContent = description;
+              var cancelButton = document.getElementById('cancel-button');
+
+              cancelButton.addEventListener('click', function() {
+           
+                  dialog.style.display = 'none'; 
+              });
+          });
+      });
+  });
+  const deleteButtons = document.querySelectorAll('.delete');
+
+// Iteracja przez przyciski i dodanie obsługi zdarzenia dla każdego
+deleteButtons.forEach(button => {
+    button.addEventListener('click', function() {
+        const eventId = this.getAttribute('data-id');
+
+        // Wysłanie żądania do kontrolera za pomocą fetch lub innej metody
+        fetch(`/events/${eventId}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}', // Jeśli używasz ochrony CSRF
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Tutaj możesz obsłużyć odpowiedź z serwera po usunięciu zdarzenia
+            console.log(data);
+            // Odświeżenie strony lub wykonanie innych akcji
+        })
+        .catch(error => {
+            console.error('Wystąpił błąd podczas usuwania zdarzenia:', error);
+        });
+    });
+});
     </script>
    
 @endsection

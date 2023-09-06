@@ -1,5 +1,8 @@
 @extends('layouts.app')
+@section('styles')
 
+<link rel="stylesheet" href="{{asset('css/footer.css')}}">
+@endsection
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
@@ -149,10 +152,10 @@
 <div class="row mb-2">
     <div class="col-md-6 offset-md-4">
         <button type="submit" class="btn btn-primary">
-            {{ __('Edytuj') }}
+            {{ __('Zapisz zmiany') }}
         </button>
-        <a href="{{ route('event.list') }}" class="btn btn-primary">
-            {{ __('Wróć') }}
+        <a href="{{ route('user_list') }}" class="btn btn-primary">
+            {{ __('Anuluj') }}
         </a>
     </div>
 </div>
@@ -164,4 +167,7 @@
     </div>
 </div>
 </div>
+<div class="footer">
+    <p class="footer-text">@Sławek&Natan Company</p>
+    </div>
 @endsection
