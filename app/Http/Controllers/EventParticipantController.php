@@ -6,6 +6,7 @@ use App\Models\EventParticipant;
 use App\Models\EventParticipantList;
 use App\Models\EventDetails;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class EventParticipantController extends Controller
 {
@@ -21,10 +22,32 @@ class EventParticipantController extends Controller
     ->join('event_participants', 'event_participant_lists.event_participants_id', '=', 'event_participants.id')
     ->where('event_participants.event_details_id', $id)
     ->get();
+
+    $Numberseats = EventDetails::find($id)->number_seats;
     return view('list',[
         'event_details_id'=>$id,
         'names'=>$eventParticipants,
+        'seats'=>$Numberseats,
        ]);
+    }
+    public function freeSeets($id,$registrationCount){
+       
+        
+
+        $eventDetails = EventDetails::find($id);
+
+       
+
+        $availableSeats = $eventDetails->number_seats - $registrationCount;
+
+        if($availableSeats < 0)
+        {
+            return 0;
+
+        }
+        else{
+            return 1;
+        }
     }
     
     public function store(Request $request){
@@ -45,33 +68,51 @@ class EventParticipantController extends Controller
                 ];
             }
         }
+        if(count($participants)==0)
+        {
+            return redirect()->route('user_list');
+        }
         $event_details_id = $request->input('event_details_id');
         $events_id = EventDetails::find($event_details_id)->events_id;
         
-        $eventParticipant = new EventParticipant();
-        $eventParticipant->date_report = now(); // Ustawiamy datę raportu na aktualną datę
-        $eventParticipant->date_approval = null; // Ustawiamy datę zatwierdzenia na null
-        $eventParticipant->number_of_people = count($participants);
-        $eventParticipant->comments = null;
-        $eventParticipant->dictionary_schools_id =null;
-        $eventParticipant->participants_id = null;
-        $eventParticipant->events_id = $events_id;
-        $eventParticipant->event_details_id = $event_details_id;
-    
+        $NumberParticipants=count($participants);
+
+        $result=$this->freeSeets($event_details_id,$NumberParticipants);
+        if($result==1){
+            $eventParticipant = new EventParticipant();
+            $eventParticipant->date_report = now(); // Ustawiamy datę raportu na aktualną datę
+            $eventParticipant->date_approval = null; // Ustawiamy datę zatwierdzenia na null
+            $eventParticipant->number_of_people = count($participants);
+            $eventParticipant->comments = null;
+            $eventParticipant->dictionary_schools_id =null;
+            $eventParticipant->participants_id = null;
+            $eventParticipant->events_id = $events_id;
+            $eventParticipant->event_details_id = $event_details_id;
         
-        $eventParticipant->save();
-
-        $eventParticipantId = $eventParticipant->id;
-       
-
-        foreach ($participants as $participantData){
-            $eventParticipantList = new EventParticipantList();
-            $eventParticipantList->event_participants_id=$eventParticipantId;
-            $eventParticipantList->first_name= $participantData['first_name'];
-            $eventParticipantList->last_name=$participantData['last_name'];
-            $eventParticipantList->save();
+            
+            $eventParticipant->save();
+            $eventDetails = EventDetails::find($event_details_id);
+            $eventDetails->number_seats -= $NumberParticipants;
+            $eventDetails->save();
+            $eventParticipantId = $eventParticipant->id;
+           
+    
+            foreach ($participants as $participantData){
+                $eventParticipantList = new EventParticipantList();
+                $eventParticipantList->event_participants_id=$eventParticipantId;
+                $eventParticipantList->first_name= $participantData['first_name'];
+                $eventParticipantList->last_name=$participantData['last_name'];
+                $eventParticipantList->save();
+                
+            }
+            
+            return redirect()->route('user_list');
         }
-        return redirect()->route('user_list');
+        else{
+                 $error = 'Nie ma już wolnych miejsc.';
+                return redirect()->route('user_list')->withErrors(['message' => $error]);
+        }
+      
     }
     
 }

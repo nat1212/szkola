@@ -12,6 +12,9 @@
 
                 <div class="card-body">
                 <div class="row">
+                       <label>Wolne miejsca=>{{ $seats }}</label>
+                    </div>  
+                <div class="row">
                         <div class="col-md-6">
                             <input id="number_input" class="form-control" type="number" placeholder="Liczba">
                         </div>
