@@ -74,7 +74,10 @@ class EventDetailsController extends Controller
                         ->withInput();
         }
 
-
+        $all_seats = $request->input('number_seats');
+        
+      
+        $request->merge(['all_seats' => $all_seats]);
         EventDetails::create($request->all());
 
         $userId=Auth::id(); 

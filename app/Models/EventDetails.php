@@ -20,6 +20,7 @@ class EventDetails extends Model
         'date_end',
         'description',
         'comments',
+        'all_seats',
         'number_seats',
         'events_id',
         'date_start_rek',

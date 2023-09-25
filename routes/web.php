@@ -29,14 +29,17 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
 Route::middleware(['auth','verified'])->group(function(){
-   
+    Route::get('create', function () {
+        return view('create');
+    });
 
 });
 
-Route::get('create', function () {
-    return view('create');
-});
+
 
 
 Route::get('/event/list',[EventController::class,'index'])->name('event.list')->middleware('auth');
@@ -91,7 +94,11 @@ Route::get('event_info/{id}',[EventController::class,'event_info'])->name('event
 Route::get('/zapisz/{id}',[EventParticipantController::class,'zapisz'])->name('zapisz');
 Route::get('/list/{id}',[EventParticipantController::class,'list'])->name('list');
 Route::post('/zapisz',[EventParticipantController::class,'store']);
+Route::post('/edit',[eventParticipantController::class,'edit']);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::delete('list/{id}', [eventParticipantController::class, 'destroy']);
+Route::delete('list-xd/{id}', [eventParticipantController::class, 'delete']);
+
+
 
 //Route::middleware()

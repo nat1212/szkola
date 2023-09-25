@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="{{asset('css/footer.css')}}">
 @endsection
 @section('content')
-<div class="container">
+<div style="margin-bottom:25px;" class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
@@ -206,8 +206,8 @@
                             </div>
                     </div>
                     <div style="display:flex; justify-content: center;" class="row mb-3">
-                    <button style="width:160px;margin-right:10px "data-id="{{ $row->id }}" class="btn btn-danger delete" >Zabierz uprawnienia</button>
-                    <button class="btn btn-danger del" data-id="{{ $row->id }}">X</button>
+                    <button style="width:160px;margin-right:10px "data-id="{{ $row->id }}" class="btn btn-danger del" >Zabierz uprawnienia</button>
+                    
                     <button style="width:170px;"type="submit" class="btn btn-primary">
                                 {{ __('Zapisz zmiany') }}
                             </button>
@@ -223,6 +223,7 @@
                             row-gap: 40px;">
                     
                     @foreach($eventDetails as $detail)
+                    @if ($detail->deleted_at==Null) 
                     <form method="POST" action="{{route('edit_details.update',$detail->id)}}">
                         @csrf
                     <div style="max-height: 400px;  overflow-y: auto;  padding: 20px;">
@@ -306,22 +307,36 @@
                             </div>
                             
                     </div>
-                    
+                   
+                    <div class="row mb-3">
+                    @foreach ($groups as $group)
+                        @if ($group->date_end > now())
+
+                       
+                        @if ($group->date_start > now())
+                        <a href="{{ route('list',$group->participant_id,) }}" style=" margin-left:70px;margin-bottom:30px;width:250px;"class="btn btn-danger">{{ $group->title }}</a>
+                                    @else
+                                    <a href="{{ route('list', $group->id) }}" class="btn btn-danger disabled">{{ $group->title }}</a>
+                                    @endif
+                        @endif
+                    @endforeach   
+                    </div>
                    
                         
                                 
                            
                      
                 </div>
-                <div class="col-md-6 offset-md-4">
+                <div style="margin-bottom: 20px; margin-top: 20px;" class="col-md-6 offset-md-4">
                 <button type="submit" class="btn btn-primary">
                     {{ __('Zapisz zmiany') }}
                         </button>
                     
                     </div> 
                 </form>
+                @endif  
                 @endforeach
-                       
+                 
                 </div>
                 
                 </div>
@@ -340,6 +355,8 @@ var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
           $('.del').click(function() {
               var eventId = $(this).data("id");
+              var confirmed = window.confirm("Czy na pewno chcesz zabrać uprawnienia?");
+              if (confirmed) {
               $.ajax({
                   method: "DELETE",
                   url: "http://szkola.test/event-services/" + eventId,
@@ -355,7 +372,7 @@ var csrfToken = $('meta[name="csrf-token"]').attr('content');
               .fail(function(response) {
                   alert("Error");
               });
-          });
+          }});
           </script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {

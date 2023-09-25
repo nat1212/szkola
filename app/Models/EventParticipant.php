@@ -17,6 +17,7 @@ class EventParticipant extends Model
         'comments',
         'dictionary_schools_id',
         'participants_id',
+        'users_id',
         'events_id',
         'event_details_id',
     ];

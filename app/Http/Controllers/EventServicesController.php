@@ -50,7 +50,19 @@ class EventServicesController extends Controller
     }
     public function store(Request $request):RedirectResponse
       {
-        $checkId =$request->users_id;
+        $email = $request->email;
+        $user = User::where('email', $email)->first();
+        
+        if (!$user) {
+            $error = 'Nie ma podanego użytkownika.';
+            return redirect()->back()->withErrors(['message' => $error]);
+        }
+        
+        $users_id = $user->id;
+        $request->merge(['users_id' => $users_id]);
+
+        
+        $checkId = $request->users_id;
         $event=$request->events_id;
         $count = EventService::where('users_id', $checkId)
                       ->where('events_id', $event)
@@ -61,8 +73,8 @@ class EventServicesController extends Controller
           return redirect()->back()->withErrors(['message' => $error]);
         }
 
-
-
+        
+              
 
         $validator = $this->validateEventData($request);
 

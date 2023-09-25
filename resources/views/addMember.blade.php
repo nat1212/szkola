@@ -79,13 +79,13 @@
                             <label for="users_id" class="col-md-4 col-form-label text-md-end">{{ __('User') }}</label>
 
                             <div class="col-md-6">
-                            <select id="status" class="form-control" name="users_id" required autofocus>
-                                @foreach($users as $key => $user)
-                                    @if(!$key == 0)
-                                    <option value="{{ $user->id }}">{{ $user->email }}</option>
-                                    @endif
-                                @endforeach
-                            </select>
+                            
+                                    
+                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" required autocomplete="email">
+                            <input id="users_id" value="" type="hidden" name="users_id" required autocomplete="email">
+
+                           
+
                             </div>
                         </div>
                         <input type="hidden" name="additional_property" value="1" />

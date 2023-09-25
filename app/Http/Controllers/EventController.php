@@ -225,9 +225,10 @@ class EventController extends Controller
                         ->withErrors($validator)
                         ->withInput();
         }
-
+        
         $locationShortcut = $request->input('city') . ', ' . $request->input('street') . ' ' . $request->input('no_building');
         $request->merge(['location_shortcut' => $locationShortcut]);
+        
         $event = new Event($request->all());
         $event->save();
         $eventService = new EventService();
@@ -250,6 +251,9 @@ class EventController extends Controller
      */
     public function show(Event $event):View
     {
+
+        $userId = Auth::id();
+
         $result = DB::table('event_services')
         ->where('events_id', $event->id)
         ->whereNull('event_services.deleted_at')
@@ -269,13 +273,25 @@ class EventController extends Controller
         ->take(PHP_INT_MAX)
         ->get();
 
+        $groups = DB::table('event_participants')
+        ->join('events', 'event_participants.events_id', '=', 'events.id')
+        ->join('event_details', 'event_participants.event_details_id', '=', 'event_details.id')
+        ->where('event_participants.participants_id', $userId)
+        ->whereNull('event_participants.deleted_at')
+        ->whereNotNull('event_participants.number_of_people')
+        ->select('event_details.title', 'event_details.date_start', 'event_details.date_end', 'event_details.description', 'event_participants.id as participant_id','event_details.number_seats','event_details.id','event_participants.created_at')
+        ->orderBy('event_details.date_start', 'asc')
+        ->get();
+
         $eventDetails = $event->info;
+        
         return view("event.show", [
             'event' => $event,
             'result'=> $result,
             'eventDetails' => $eventDetails,
             'statuses' => EventStatus::all(),
             'roles' =>UserRole::all(),
+            'groups' => $groups,
         ]);
     }
 

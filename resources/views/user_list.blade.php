@@ -134,8 +134,7 @@
               <button class="btn show-sub-events" data-info-id="{{ $info->id }}">Pokaż szczegóły</button>
               <a href="{{ route('event.edit_details', $info->id) }}" style="width:50px "class="btn btn-danger">Edycja</a>
               <button data-id="{{ $info->id }}"  style="width:50px " class="btn btn-danger des" >Usuń</button>
-              <a href="{{ route('zapisz', $info->id) }}" style="width:50px "class="btn btn-danger">Zapisz</a>
-              <a href="{{ route('list', $info->id) }}" style="width:50px "class="btn btn-danger">Lista</a>
+              <a href="{{ route('zapisz', $info->id) }}" style="width:50px "class="btn btn-danger">Zapisz grupe</a>
               @else
               <button class="btn show-sub-events" data-info-id="{{ $info->id }}" disabled>></button>
                     @endif
@@ -194,6 +193,8 @@ var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
           $('.del').click(function() {
               var eventId = $(this).data("id");
+              var confirmed = window.confirm("Czy na pewno chcesz usunąć to wydarzenie?");
+              if (confirmed) {
               $.ajax({
                   method: "DELETE",
                   url: "http://szkola.test/event/" + eventId,
@@ -209,13 +210,17 @@ var csrfToken = $('meta[name="csrf-token"]').attr('content');
               .fail(function(response) {
                   alert("Error");
               });
+            }
           });
           </script>
              <script>
 var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
           $('.des').click(function() {
+            
               var eventId = $(this).data("id");
+              var confirmed = window.confirm("Czy na pewno chcesz usunąć to podwydarzenie?");
+              if (confirmed) {
               $.ajax({
                   method: "DELETE",
                   url: "http://szkola.test/event-details/" + eventId,
@@ -225,12 +230,13 @@ var csrfToken = $('meta[name="csrf-token"]').attr('content');
               })
 
               .done(function(response) {
-                  alert("Success");
+                  alert("Udało się");
                   window.location.reload();
               })
               .fail(function(response) {
                   alert("Error");
               });
+            }
           });
           </script>
 

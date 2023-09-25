@@ -32,6 +32,7 @@ return new class extends Migration
             $table->string('comments', 45)->nullable()->default(null);
             $table->integer('dictionary_schools_id')->unsigned();
             $table->integer('participants_id')->unsigned();
+            $table->integer('users_id')->unsigned();
             $table->integer('events_id')->unsigned();
             $table->integer('event_details_id')->unsigned();
             $table->timestamps();
@@ -40,6 +41,8 @@ return new class extends Migration
             $table->index(["dictionary_schools_id"]);
 
             $table->index(["participants_id"]);
+
+            $table->index(["users_id"]);
 
             $table->index(["events_id"]);
 
@@ -53,6 +56,9 @@ return new class extends Migration
             $table->foreign('participants_id')
                 ->references('id')->on('participants');
                
+                $table->foreign('users_id')
+                ->references('id')->on('users');
+
             $table->foreign('events_id')
                 ->references('id')->on('events');
                 
