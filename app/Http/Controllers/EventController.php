@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Event;
 use App\Models\User;
 use App\Models\EventDetails;
+use App\Models\EventParticipant;
 use App\Models\EventStatus;
 use App\Models\EventService;
 use App\Models\UserRole;
@@ -55,13 +56,14 @@ class EventController extends Controller
      */
     public function index(Request $request):View
     {
-
+        $user_id = Auth::id();
         $currentDateTime = Carbon::now();
         $specificEventId = null;
-
+        $searchMessage = null;
         if ($request->has('specific_event_id')) {
             $specificEventId = $request->input('specific_event_id');
         }
+        $userEvents = EventService::where('users_id', $user_id)->pluck('events_id');
 
         $events = Event::where('date_start_publi', '<', $currentDateTime)
                    ->where('date_end_publi', '>', $currentDateTime)
@@ -89,7 +91,7 @@ class EventController extends Controller
                         
                     }}
         
-        return view('event.list', ['events' => $events,'specificEventId' => $specificEventId]);
+        return view('event.list', ['events' => $events,'userEvents'=>$userEvents,'specificEventId' => $specificEventId,'searchMessage'=>$searchMessage]);
     }
     public function permissions(){
         $user_id = Auth::id(); 
@@ -202,7 +204,7 @@ class EventController extends Controller
     
 
        
-        return view('user_list',[
+        return view('home',[
             'userEvents' => $events,
             //"results"=>$results,
           ]);
@@ -239,7 +241,7 @@ class EventController extends Controller
         $action = 'Utworzył wydarzenie';
         Log::channel('php_file')->info('Użytkownik ' . $user->email . ': ' . $action);
 
-        return redirect(route('user_list'));
+        return redirect(route('home'));
         
     }
 
@@ -257,6 +259,7 @@ class EventController extends Controller
         $result = DB::table('event_services')
         ->where('events_id', $event->id)
         ->whereNull('event_services.deleted_at')
+        ->whereNotIn('event_services.users_role_dictionary_id', [1])
         ->join('users', 'event_services.users_id', '=', 'users.id')
         ->join('users_role_dictionary', 'event_services.users_role_dictionary_id', '=', 'users_role_dictionary.id')
         ->select(
@@ -269,21 +272,21 @@ class EventController extends Controller
             'users.last_name',
             'users.email'
         )
-        ->skip(1)
-        ->take(PHP_INT_MAX)
         ->get();
+
+        $eventDetails = $event->info;
 
         $groups = DB::table('event_participants')
         ->join('events', 'event_participants.events_id', '=', 'events.id')
         ->join('event_details', 'event_participants.event_details_id', '=', 'event_details.id')
-        ->where('event_participants.participants_id', $userId)
+        ->where('event_participants.users_id', $userId)
         ->whereNull('event_participants.deleted_at')
         ->whereNotNull('event_participants.number_of_people')
         ->select('event_details.title', 'event_details.date_start', 'event_details.date_end', 'event_details.description', 'event_participants.id as participant_id','event_details.number_seats','event_details.id','event_participants.created_at')
         ->orderBy('event_details.date_start', 'asc')
         ->get();
 
-        $eventDetails = $event->info;
+        
         
         return view("event.show", [
             'event' => $event,
@@ -313,7 +316,7 @@ class EventController extends Controller
         }
         else{
             $error = 'Nie masz uprawnień do edycji.';
-            return redirect()->route('event.list')->withErrors(['message' => $error]);
+            return redirect()->route('home')->withErrors(['message' => $error]);
         }
         
            
@@ -323,8 +326,13 @@ class EventController extends Controller
     public function search(Request $request)
     {
         $searchTerm = $request->input('search_name');
-    
+
+        if (empty($searchTerm)) {
+            return redirect()->route('event.list');
+        }
+          
         $currentDateTime = Carbon::now();
+ 
     
         $events = Event::where('date_start_publi', '<', $currentDateTime)
                        ->where('date_end_publi', '>', $currentDateTime)
@@ -333,32 +341,37 @@ class EventController extends Controller
                        ->where('name', 'LIKE', "%{$searchTerm}%")
                        ->orderBy('date_start', 'asc')
                        ->paginate(2);
-    
-        
-    
-    foreach ($events as $event) {
-        $event->date_start = Carbon::parse($event->date_start);
-        $event->date_end = Carbon::parse($event->date_end);
-        $event->date_start_rek = Carbon::parse($event->date_start_rek);
-        $event->date_end_rek = Carbon::parse($event->date_end_rek);
+   
 
-        foreach($event->info as $info)
-        {
-            $info->date_start = Carbon::parse($info->date_start);
-            $info->date_end = Carbon::parse($info->date_end);
-            $info->date_start_rek = Carbon::parse($info->date_start_rek);
-            $info->date_end_rek = Carbon::parse($info->date_end_rek);
+        if ($events->isEmpty()) {
+            
+            $searchMessage = 'Brak wyników dla wprowadzonej nazwy.';
+        } else {
+          
+            $searchMessage = null;
+       
+           
+            foreach ($events as $event) {
+                $event->date_start = Carbon::parse($event->date_start);
+                $event->date_end = Carbon::parse($event->date_end);
+                $event->date_start_rek = Carbon::parse($event->date_start_rek);
+                $event->date_end_rek = Carbon::parse($event->date_end_rek);
+    
+                foreach($event->info as $info)
+                {
+                    $info->date_start = Carbon::parse($info->date_start);
+                    $info->date_end = Carbon::parse($info->date_end);
+                    $info->date_start_rek = Carbon::parse($info->date_start_rek);
+                    $info->date_end_rek = Carbon::parse($info->date_end_rek);
+                }
+            }
         }
-
-    }
     
         
-    
-    
         return view('event.list', [
             'events' => $events,
             'searchTerm' => $searchTerm,
-
+            'searchMessage' => $searchMessage, // Przekaż zmienną informacyjną do widoku
         ]);
     }
     /**
@@ -388,7 +401,7 @@ class EventController extends Controller
         $action = 'Edytował wydarzenie o id';
         Log::channel('php_file')->info('Użytkownik ' . $user->email . ': ' . $action.': '.$event->id );
 
-        return redirect(route('user_list'));
+        return redirect(route('home'));
     }
 
     /**
@@ -417,7 +430,7 @@ class EventController extends Controller
     }
     else{
         $error = 'Nie masz uprawnień do usunięcia.';
-        return redirect()->route('user_list')->withErrors(['message' => $error]);
+        return redirect()->route('home')->withErrors(['message' => $error]);
 
     }
     }

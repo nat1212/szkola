@@ -25,6 +25,7 @@ class EventDetails extends Model
         'events_id',
         'date_start_rek',
         'date_end_rek',
+        'type',
         ];
       
     public function event()

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Model;
+
 trait AuthenticatesUsers
 {
     use RedirectsUsers, ThrottlesLogins;
@@ -132,6 +134,9 @@ trait AuthenticatesUsers
     {
         $action = 'zalogował się';
         Log::channel('php_file')->info('Użytkownik ' . $user->email . ': ' . $action);
+        User::where('id', $user->id)->update(['last_login' => now()]);
+
+
     }
 
     /**
@@ -171,7 +176,7 @@ trait AuthenticatesUsers
         $user=User::find($userId);
         $action = 'Wylogował się';
         Log::channel('php_file')->info('Użytkownik ' . $user->email . ': ' . $action );
-
+        User::where('id', $user->id)->update(['last_logout' => now()]);
         $this->guard()->logout();
 
         $request->session()->invalidate();

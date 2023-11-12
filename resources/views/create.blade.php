@@ -191,7 +191,7 @@
                         <div class="row mb-0">
                             <div class="col-md-6 offset-md-5    ">
                                 <button type="submit" class="btn btn-primary">
-                                    {{ __('Stwórz') }}
+                                    {{ __('Utwórz') }}
                                 </button>
                                 <a href="{{ route('event.list') }}" class="btn btn-primary">
                                     {{ __('Wróć') }}

@@ -1,34 +1,39 @@
 @extends('layouts.app')
 @section('styles')
 
-<link rel="stylesheet" href="{{asset('css/footer.css')}}">
+<link rel="stylesheet" href="{{asset('css/footer2.css')}}">
 @endsection
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-            <div class="card-header">{{ __('Edycja grupowa oraz zapis na wydarzenie:')}}  </div>
+            <div class="card-header">{{ __('Edycja grupowa na wydarzenie:')}}   {{$event_details_title}} </div>
 
 <div class="card-body">
 <div class="container2">
 <div class="center-align">
+@if (strtotime($date) > strtotime('now'))
 <label for="number_input">Dostępne miejsca:</label>
 <span id="available_seats">{{ $seats }}</span>
 </div>
 <div class="center-align">
+
 <div class="input-group">
 <input id="number_input" class="form-control" type="number" placeholder="Dodaj nowe osoby" min="1">
 <div class="input-group-append">
-<button onclick="addInputss()" class="btn-spacing">Dodaj</button>
-<button data-id="{{ $event_id }}" class="btn btn-danger del">Usuń liste</button>
-</div>
+<button style ="margin-left:10px;" onclick="addInputss()" class="btn btn-primary"  id="numberr">Dodaj</button>
 </div>
 
 </div>
+@endif
+</div>
+
 <div id="update-message2" class="alert" style="display: none;"></div>
 </div>
-                    <form method="POST" action="/edit">
+
+        <form id="myForm" method="POST" action="/edit">
+
                         @csrf
 
                         <div class="row mb-3">
@@ -38,34 +43,59 @@
 
 
     @foreach($names as $i => $participant)
-    <div style="margin-bottom:15px;" class="col-md-5">
-        <input class="form-control" type="text" name="first{{ $i }}" value="{{ $participant->first_name }}" placeholder="Imię" autocomplete="nazwa1" autofocus>
-    </div>
-    <div class="col-md-5">
-        <input class="form-control" type="text" name="last{{ $i }}" value="{{ $participant->last_name }}" placeholder="Nazwisko" autocomplete="nazwa2" autofocus>
-    </div>
-    <div class="col-md-1" >
-        <button data-id="{{ $participant->id }}" class="btn btn-danger des">Usuń</button>
+    <div class="row mb-3">
+        <div class="col-md-1">
+            <label class="numeracja-label">{{ $i + 1 }}.</label>
+        </div>
+        @if (strtotime($date) > strtotime('now'))
+        <div class="col-md-4"> 
+            <input class="form-control" type="text" name="first{{ $i }}" value="{{ $participant->first_name }}" placeholder="Imię" autocomplete="nazwa1" autofocus>
+        </div>
+        <div class="col-md-4">
+            <input class="form-control" type="text" name="last{{ $i }}" value="{{ $participant->last_name }}" placeholder="Nazwisko" autocomplete="nazwa2" autofocus>
+        </div>
+        @else
+        <div class="col-md-4">
+    <input class="form-control" type="text" name="first{{ $i }}" value="{{ $participant->first_name }}" placeholder="Imię" autocomplete="nazwa1" autofocus readonly>
+</div>
+<div class="col-md-4">
+    <input class="form-control" type="text" name="last{{ $i }}" value="{{ $participant->last_name }}" placeholder="Nazwisko" autocomplete="nazwa2" autofocus readonly>
+</div>
+
+        @endif
+        @if (strtotime($date) > strtotime('now'))
+        <div class="col-md-1">
+            <button data-id="{{ $participant->id }}" class="btn btn-danger des">Usuń</button>
+        </div>
+        @endif
     </div>
 @endforeach
-    </div>
-</div>
-                       
-                        <input type="hidden" name="id" value="{{ $event_id }}">
-                       
-                        <input type="hidden" name="event_details_id" value="{{ $event_details_id }}">
 
-                        <div class="row mb-0">
-                            <div class="col-md-6 offset-md-5    ">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Edytuj') }}
-                                </button>
-                                <a href="{{ route('event.list') }}" class="btn btn-primary">
-                                    {{ __('Wróć') }}
-                                </a>
-                            </div>
-                        </div>
-                    </form>
+
+    </div>
+    
+</div>
+<input type="hidden" name="id" value="{{ $event_id }}">
+                       
+                       <input type="hidden" name="event_details_id" value="{{ $event_details_id }}">
+                
+                       <div class="button-container">
+    @if (strtotime($date) > strtotime('now'))
+        <button type="submit" class="btn btn-primary"style="margin: 5px;" id="save-button" disabled>
+            {{ __('Zapisz') }}
+        </button>
+    @endif
+
+    <a href="{{ route('home', ['close_group_section' => 1]) }}" class="btn btn-primary" style="margin: 5px;">Anuluj</a>
+</div>
+</form>
+<div class="button-container">
+    @if (strtotime($date) > strtotime('now'))
+        <button data-id="{{ $event_id }}" class="btn btn-danger del">Usuń liste</button>
+    @endif
+</div>
+                          
+                    
                     </div>
                 </div>
             </div>
@@ -76,6 +106,13 @@
     <p class="footer-text">@Sławek&Natan Company</p>
     </div>
 
+    <div id="leave-dialog" class="dialog"  style="display: none;">
+    <div class="dialog-content">
+        <p>Czy na pewno chesz usunąć grupę?</p>
+        <button id="confirm-leave-button">Tak</button>
+        <button id="cancel-leave-button">Nie</button>
+    </div>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -83,6 +120,7 @@
     document.addEventListener("DOMContentLoaded", function() {
         const firstNameInputs = document.querySelectorAll("input[name^='first_name']");
         const lastNameInputs = document.querySelectorAll("input[name^='last_name']");
+        
         
         firstNameInputs.forEach(function(input, index) {
             input.addEventListener("input", function() {
@@ -106,7 +144,7 @@
     });
 </script>
 <script>
-  let counter = 0; 
+  let counter = {{ count($names) }};
 
 function addInputss() {
     const numberInput = document.getElementById("number_input");
@@ -204,41 +242,88 @@ function addInputss() {
                 })
                .done(function (response) {
 
+
+
         const currentAvailableSeats = parseInt(document.getElementById('available_seats').textContent);
         const newAvailableSeats = currentAvailableSeats + 1; 
 
         window.location.reload();
+
+        
     })
-  
-});
 
     
+});
 
 </script>
 <script>
-    var csrfToken = $('meta[name="csrf-token"]').attr('content');
+   var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
 $('.del').click(function() {
-  
     var eventId = $(this).data("id");
-    var confirmed = window.confirm("Czy na pewno chcesz usunąć to podwydarzenie?");
-    if (confirmed) {
-    $.ajax({
-        method: "DELETE",
-        url: "http://szkola.test/list-xd/" + eventId,
-        headers: {
-            'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
-        }
-    })
 
-    .done(function(response) {
-        alert("Udało się");
-        window.location.reload();
-    })
-    .fail(function(response) {
-        alert("Error");
+    $('#leave-dialog').show();
+
+    $('#confirm-leave-button').click(function() {
+        $('#leave-dialog').hide();
+        $.ajax({
+            method: "DELETE",
+            url: "http://szkola.test/list-xd/" + eventId,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            complete: function() {
+                window.location.href = '/home';
+            }
+        });
     });
-  }
+
+    $('#cancel-leave-button').click(function() {
+        $('#leave-dialog').hide();
+    });
 });
-    </script>
+
+
+
+    const form = document.getElementById('myForm');
+
+// Nasłuchuj zdarzenia naciśnięcia klawisza w formularzu
+form.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { // Sprawdź, czy naciśnięty klawisz to Enter
+        e.preventDefault(); // Zapobiegaj domyślnemu zachowaniu Enter (np. przejście do nowej linii)
+        form.submit(); // Wyślij formularz
+    }
+});
+
+function enableSaveButton() {
+        $('#save-button').prop('disabled', false);
+    }
+
+   
+    function disableSaveButton() {
+        $('#save-button').prop('disabled', true);
+    }
+
+   
+    $('input[type="text"]').on('input', function () {
+        enableSaveButton();
+    });
+
+    $('#numberr').on('click', function () {
+        enableSaveButton();
+    });
+   
+    $('#add-button').on('click', function () {
+        enableSaveButton();
+    });
+
+ 
+    $('#myForm').on('submit', function () {
+      
+        disableSaveButton();
+    });
+
+</script>
+
+
 @endsection

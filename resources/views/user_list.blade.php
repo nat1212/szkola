@@ -134,7 +134,7 @@
               <button class="btn show-sub-events" data-info-id="{{ $info->id }}">Pokaż szczegóły</button>
               <a href="{{ route('event.edit_details', $info->id) }}" style="width:50px "class="btn btn-danger">Edycja</a>
               <button data-id="{{ $info->id }}"  style="width:50px " class="btn btn-danger des" >Usuń</button>
-              <a href="{{ route('zapisz', $info->id) }}" style="width:50px "class="btn btn-danger">Zapisz grupe</a>
+              <a href="{{ route('zapisz', $info->id) }}" style="width:50px "class="btn btn-danger">Zapis</a>
               @else
               <button class="btn show-sub-events" data-info-id="{{ $info->id }}" disabled>></button>
                     @endif

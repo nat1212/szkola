@@ -147,7 +147,7 @@
         <button type="submit" class="btn btn-primary">
             {{ __('Zapisz zmiany') }}
         </button>
-        <a href="{{ route('user_list') }}" class="btn btn-primary">
+        <a href="{{ route('home') }}" class="btn btn-primary">
             {{ __('Anuluj') }}
         </a>
     </div>

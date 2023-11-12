@@ -58,6 +58,10 @@
                                 </li>
                             @endif
                         @else
+                        <li class="nav-item">
+                        @if(Auth::check())
+                <div style="font-size:16px;" class="nav-link">{{ __('Witaj,') }} {{ Auth::user()->first_name }}</div>
+                        @endif
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}
@@ -65,8 +69,21 @@
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href = "{{ route('home') }}">Profil</a>
-                                    <a class="dropdown-item" href = "{{ route('user_list') }}">Twoje wydarzenia</a>
                                     <a class="dropdown-item" href = "{{ route('event.list') }}">Wydarzenia</a>
+                                    @if(Request::is('home*'))
+                                    <div class="H2p">
+                                    <a  onclick="toggleExpand()" class="dropdown-item"  href="#">
+                                    {{ __('Edycja profilu') }}
+                                    </a>
+                                    <a onclick="rating(1)" class="dropdown-item"  href="#">
+                                    {{ __(' Lista twoich wydarzeń') }}
+                                    </a>
+                                    <a onclick="rating(2)" class="dropdown-item"  href="#">
+                                    {{ __(' Wygasłe wydarzenia') }}
+                                    </a>
+                                    </div>
+                                    
+                                    @endif
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">

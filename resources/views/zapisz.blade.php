@@ -11,16 +11,23 @@
                 <div class="card-header">{{ __('Zapis grupowy na wydarzenie:')}}   {{$event_details_title}} </div>
 
                 <div class="card-body">
+                <div class="des2">Uwaga!</div>
+                <div class="des">W tym zapisie jeśli pole imię oraz nazwisko nie jest wypełnione to program tego nie liczy!</div>
               <div class="container2">
     <div class="center-align">
         <label for="number_input">Dostępne miejsca:</label>
-        <span id="available_seats">{{ $seats }}</span>
+        <span id="available_seats">{{ $seats }} </span>
     </div>
+
+
+
+    
     <div class="center-align">
         <div class="input-group">
+        <input type="hidden" name="numeric_only" value="{{ $type }}">
             <input id="number_input" class="form-control" type="number" placeholder="Dodaj osoby" min="1">
             <div class="input-group-append">
-                <button onclick="addInputss()" class="btn-spacing">Dodaj</button>
+                <button style ="margin-left:10px;" onclick="addInputss()" class="btn btn-primary" id="addPeopleButton">Dodaj</button>
             </div>
         </div>
       
@@ -28,13 +35,12 @@
     <div id="update-message2" class="alert" style="display: none;"></div>
 </div>
 
-                    <form method="POST" action="/zapisz">
+                    <form method="POST" action="/zapisz" onsubmit="return validateForm();">
                         @csrf
 
                         <div class="row mb-3"></div>
 
-<div id="participantInputs"> 
-</div>
+<div id="participantInputs"></div>
                      
                    
                        
@@ -42,11 +48,14 @@
 
                         <div class="row mb-0 mt-4">
                             <div class="col-md-6 offset-md-5    ">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Stwórz') }}
-                                </button>
-                                <a href="{{ route('event.list') }}" class="btn btn-primary">
-                                    {{ __('Wróć') }}
+                            <button type="submit" class="btn btn-primary" id="submitButton" disabled>
+    {{ __('Zapisz') }}
+</button>
+
+
+
+                                <a href="{{ route('home') }}" class="btn btn-primary">
+                                    {{ __('Anuluj') }}
                                 </a>
                             </div>
                         </div>
@@ -68,6 +77,7 @@
     document.addEventListener("DOMContentLoaded", function() {
         const firstNameInputs = document.querySelectorAll("input[name^='first_name']");
         const lastNameInputs = document.querySelectorAll("input[name^='last_name']");
+        const addButton = document.getElementById('addButton');
         
         firstNameInputs.forEach(function(input, index) {
             input.addEventListener("input", function() {
@@ -99,6 +109,22 @@ function addInputss() {
     const updateMessage = document.getElementById('update-message2');
     const availableSeatsElement = document.getElementById('available_seats');
     const participantInputs = document.getElementById('participantInputs'); 
+    const submitButton = document.getElementById("submitButton");
+
+
+
+    numberInput.addEventListener("input", function() {
+        const numberOfInputsToAdd = parseInt(numberInput.value);
+ 
+
+        if (!isNaN(numberOfInputsToAdd) && numberOfInputsToAdd > 0 ) {
+            submitButton.removeAttribute("disabled");
+        }
+    });
+
+    // Initially check the input value
+    numberInput.dispatchEvent(new Event("input"));
+
 
     if (isNaN(numberOfInputsToAdd) || numberOfInputsToAdd <= 0) {
         updateMessage.textContent = "Proszę wprowadzić poprawną liczbę większą od zera.";
@@ -160,19 +186,46 @@ function addInputss() {
         lastNameInput.name = "last_name" + counter;
         lastNameInput.placeholder = "Nazwisko";
 
+
         divCol2.appendChild(lastNameInput);
 
+     
         participantDiv.appendChild(numerationLabel);
         participantDiv.appendChild(divCol1);
         participantDiv.appendChild(divCol2);
 
         participantInputs.appendChild(participantDiv);
+
+       
     }
 
-  
+ 
     const number_of_people = document.getElementById("number_of_people");
     const totalParticipants = parseInt(number_of_people.value) + numberOfInputsToAdd;
     number_of_people.value = totalParticipants;
+
+    
+}
+function validateForm() {
+    const firstNameInputs = document.querySelectorAll("input[name^='first_name']");
+    const lastNameInputs = document.querySelectorAll("input[name^='last_name']");
+
+    const firstNameFilled = Array.from(firstNameInputs).some(input => input.value.trim() !== "");
+    const lastNameFilled = Array.from(lastNameInputs).some(input => input.value.trim() !== "");
+
+    if (!(firstNameFilled && lastNameFilled)) {
+        const updateMessage = document.getElementById('update-message2');
+        updateMessage.textContent = "Proszę wypełnić oba pola Imię i Nazwisko.";
+        updateMessage.style.display = 'block';
+
+        setTimeout(function () {
+            updateMessage.style.display = 'none';
+        }, 3000);
+
+        return false;
+    }
+
+    return true;
 }
 
 </script>

@@ -91,14 +91,36 @@ Route::post('/user/{id}/update', [UserController::class, 'updateProfile'])->name
 
 Route::get('event_info/{id}',[EventController::class,'event_info'])->name('event_info')->middleware('auth');
 
-Route::get('/zapisz/{id}',[EventParticipantController::class,'zapisz'])->name('zapisz');
+/*Route::get('/zapisz/{id}',[EventParticipantController::class,'zapisz'])->name('zapisz');
 Route::get('/list/{id}',[EventParticipantController::class,'list'])->name('list');
 Route::post('/zapisz',[EventParticipantController::class,'store']);
 Route::post('/edit',[eventParticipantController::class,'edit']);
 
 Route::delete('list/{id}', [eventParticipantController::class, 'destroy']);
 Route::delete('list-xd/{id}', [eventParticipantController::class, 'delete']);
+*/
+//LISTY
+Route::get('/zapisz/{id}',[EventParticipantController::class,'zapisz'])->name('zapisz');
+Route::get('/zapisznr/{id}',[EventParticipantController::class,'zapisznr'])->name('zapisznr');
+Route::post('/zapisz',[EventParticipantController::class,'store']);
+Route::post('/zapisznr',[EventParticipantController::class,'storenr']);
+
+Route::get('/list/{id}',[EventParticipantController::class,'list'])->name('list');
+Route::get('/listnr/{id}',[EventParticipantController::class,'listnr'])->name('listnr');
+
+Route::post('/edit',[EventParticipantController::class,'edit']);
+Route::post('/edit2',[EventParticipantController::class,'edit2']);
+Route::post('/edit3',[EventParticipantController::class,'edit3']);
+
+Route::delete('list/{id}', [EventParticipantController::class, 'destroy']);
+
+Route::delete('list-xd/{id}', [EventParticipantController::class, 'delete']);
+
+Route::delete('listnr-nr/{id}', [EventParticipantController::class, 'deletenr']);
 
 
+
+Route::get('/leave/{entryId}',[eventParticipantController::class,'leave']);
+Route::post('/signup', [eventParticipantController::class, 'signup']);
 
 //Route::middleware()

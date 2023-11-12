@@ -40,11 +40,28 @@ class UserController extends Controller
     if (!empty($request->last_name)) {
         $dataToUpdate['last_name'] = $request->last_name;
     }
+    
+    if (!empty($request->email)) {
+        $newEmail = $request->email;
+        if ($newEmail != $user->email) {
+            // Sprawdzanie unikalności adresu e-mail
+            $existingParticipant = User::where('email', $newEmail)->first();
+            if ($existingParticipant) {
+                return new JsonResponse(['message' => 'Adres e-mail jest już zajęty.']);
+            } else {
+                $dataToUpdate['email'] = $newEmail;
+                $dataToUpdate['email_verified_at'] = null;
+                $user->update($dataToUpdate);
+                $user->sendEmailVerificationNotification($newEmail);
+            }
+        }
+    }
 
    
     $user->update($dataToUpdate);
 
     return redirect()->route('home');
+    return new JsonResponse(['success' => true, 'message' => 'Profil został zaktualizowany.']);
 }
     
 }

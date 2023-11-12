@@ -55,7 +55,7 @@ class EventDetailsController extends Controller
         }
         else{
           $error = 'Nie masz uprawnień!';
-          return redirect()->route('event.list')->withErrors(['message' => $error]);
+          return redirect()->route('home')->withErrors(['message' => $error]);
       }
     }
       /**
@@ -85,7 +85,7 @@ class EventDetailsController extends Controller
         $action = 'Utworzył pod wydarzenie dla wydarzenia o id';
         Log::channel('php_file')->info('Użytkownik ' . $user->email . ': ' . $action.': '.$request->events_id );
           
-        return redirect()->route('user_list');
+        return redirect()->route('home');
           
       }
 
@@ -109,7 +109,7 @@ class EventDetailsController extends Controller
         ]);}
         else{
           $error = 'Nie masz uprawnień!';
-          return redirect()->route('event.list')->withErrors(['message' => $error]);
+          return redirect()->route('home')->withErrors(['message' => $error]);
       }
     }
       /**
@@ -168,7 +168,7 @@ class EventDetailsController extends Controller
     ]);}
     else{
       $error = 'Nie masz uprawnień!';
-      return redirect()->route('event.list')->withErrors(['message' => $error]);
+      return redirect()->route('home')->withErrors(['message' => $error]);
   }
   }
   

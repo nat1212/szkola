@@ -8,7 +8,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Dodaj kumpla') }}</div>
+                <div class="card-header">{{ __('Dodaj współpracownika') }}</div>
 
                 <div class="card-body">
                 @if($errors->any())
@@ -22,10 +22,44 @@
                 @endif
                     <form method="POST" action="/addMember">
                         @csrf
-                        <input id="events_start" type="hidden" value="{{ $date->date_start }}" class="form-control" name="event_start" required autofocus>
+                        <input id="events_start" hidden  value="{{ $date->date_start }}" class="form-control" name="event_start" required autofocus>
                         
                        
-                        <input id="events_end" type="hidden" value="{{ $date->date_end }}" class="form-control" name="event_end" required autofocus>
+                        <input id="events_end" hidden value="{{ $date->date_end }}" class="form-control" name="event_end" required autofocus>
+                        <div class="row mb-3">
+                            <label for="users_id" class="col-md-4 col-form-label text-md-end">{{ __('Email użytkownika') }}</label>
+
+                            <div class="col-md-6">
+                            
+                                    
+                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" required autocomplete="email">
+                            <input id="users_id" value="" type="hidden" name="users_id" required autocomplete="email">
+
+                           
+
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="users_role_dictionary_id" class="col-md-4 col-form-label text-md-end">{{ __('Rola') }}</label>
+
+                            <div class="col-md-6">
+                            <select id="role" class="form-control" name="users_role_dictionary_id" required autofocus>
+                                @foreach($roles as $key => $role)
+                                @if(!$key == 0)
+                                    <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                            <div id="role-description" ></div>
+                        </div>
+                        
+                        </div>
+                        <div class="row mb-3">
+                            <label for="date_start" class="col-md-4 col-form-label text-md-end">{{ __('Data wydarzenia głównego') }}</label>
+                            <div class="col-md-6">
+                            <input id="events_start"  value="{{$date->date_start . ' - ' . $date->date_end}}" class="form-control" name="event_start"  disabled required autofocus>
+                            </div>                        
+                        </div>
                         <div class="row mb-3">
                             <label for="date_start" class="col-md-4 col-form-label text-md-end">{{ __('Data początku uprawnień') }}</label>
 
@@ -52,21 +86,7 @@
                             </div>
                         </div>
 
-                        <div class="row mb-3">
-                            <label for="users_role_dictionary_id" class="col-md-4 col-form-label text-md-end">{{ __('Rola') }}</label>
-
-                            <div class="col-md-6">
-                            <select id="role" class="form-control" name="users_role_dictionary_id" required autofocus>
-                                @foreach($roles as $key => $role)
-                                @if(!$key == 0)
-                                    <option value="{{ $role->id }}">{{ $role->name }}</option>
-                                    @endif
-                                @endforeach
-                            </select>
-                            <div id="role-description" ></div>
-                        </div>
-                        
-                        </div>
+                       
                         
 
                         <div class="row mb-3">
@@ -75,19 +95,7 @@
                             <div class="col-md-6">
                             <input id="events_id" type="hidden" value="{{ $event }}" class="form-control" name="events_id" required  autofocus>                            </div>
                         </div>
-                        <div class="row mb-3">
-                            <label for="users_id" class="col-md-4 col-form-label text-md-end">{{ __('User') }}</label>
-
-                            <div class="col-md-6">
-                            
-                                    
-                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" required autocomplete="email">
-                            <input id="users_id" value="" type="hidden" name="users_id" required autocomplete="email">
-
-                           
-
-                            </div>
-                        </div>
+                        
                         <input type="hidden" name="additional_property" value="1" />
                        
 
@@ -106,6 +114,9 @@
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('Stwórz') }}
                                 </button>
+                                <a href="{{ route('home') }}" class="btn btn-primary">
+            {{ __('Anuluj') }}
+        </a>
                             </div>
                         </div>
                     </form>

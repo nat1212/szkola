@@ -21,8 +21,8 @@ class EventServicesController extends Controller
   private function validateEventData(Request $request)
   {
     $validator = Validator::make($request->all(), [
-      'date_start' => 'required|date|after_or_equal:event_start', 
-      'date_end' => 'required|date|after:date_start|before_or_equal:event_end', 
+      'date_start' => 'required|date', 
+      'date_end' => 'required|date|after:date_start', 
      
   ]);
   
@@ -45,7 +45,7 @@ class EventServicesController extends Controller
           ]);}
           else{
             $error = 'Nie masz uprawnień do dodania współpracownika.';
-            return redirect()->route('event.list')->withErrors(['message' => $error]);
+            return redirect()->route('home')->withErrors(['message' => $error]);
         }
     }
     public function store(Request $request):RedirectResponse

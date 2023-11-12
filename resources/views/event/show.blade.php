@@ -13,21 +13,21 @@
                 <div class="row mb-0">
         <div style="margin:15px">
             <a id="toggle-button" type="button" class="btn btn-primary">
-            Lista twoich wydarzeń: ►
+            Twoje wydarzenie: ►
             </a>
         </div>
         <div style="margin-left:15px;margin-bottom:15px">
             <button id="toggle-button-members" type="button" class="btn btn-primary">
-            Lista współpracowników: ►
+            Współpracownicy: ►
             </button>
         </div>
-        <div style="margin-left:15px;margin-bottom:15px">
+        <!-- <div style="margin-left:15px;margin-bottom:15px">
             <a id="toggle-button-details" type="button" class="btn btn-primary">
-            Lista twoich podwydarzeń: ►
+            Lista podwydarzeń: ►
             </a>
-        </div>
+        </div> -->
         <div style="margin-left:15px;margin-bottom:15px">
-        <a href="{{route('user_list')}}">
+        <a href="{{route('home')}}">
             <button type="submit" class="btn btn-primary">
                 {{ __('Wróć') }}
             </button>
@@ -36,8 +36,7 @@
         </div>
  
                 <div class="card-body">
-                <form method="POST" action="{{route('create.update',$event->id)}}">
-                @csrf
+              
                         <div style=" display: grid;
                             grid-template-columns: 1fr 1fr;
                             column-gap: 16px;
@@ -46,84 +45,84 @@
                             " class="left-content">
                                 <div class="des-row">
                                         <p scope="col" class="des " >Nazwa:</p>
-                                        <input id="name" type="text" class="form-control" name="name" value="{{ $event->name }}">
+                                        <textarea id="name" type="text" class="form-control" name="name" disabled>{{ $event->name }}</textarea>
                                 </div>
                             </div>
                             <div style="margin-right:50px;
                             "class="right-content">
                                 <div class="des-row">
                                         <p scope="col" class="des " >Skrót:</p>
-                                        <input id="shortcut" type="text" class="form-control" name="shortcut" value="{{ $event->shortcut }}">
+                                        <textarea id="shortcut" type="text" class="form-control" name="shortcut" disabled>{{ $event->shortcut }}</textarea>
                                 </div>
                             </div>
                             <div style="margin-left:50px;
                             " class="left-content">
                                 <div class="des-row">
                                         <p scope="col" class="des " >Data rozpoczęcia:</p>
-                                        <input id="date_start" type="datetime-local" class="form-control" name="date_start" value="{{ $event->date_start }}">
+                                        <textarea id="date_start" type="datetime-local" class="form-control" name="date_start"disabled>{{ $event->date_start }}</textarea>
                                 </div>
                             </div>
                             <div style="margin-right:50px;
                             "class="right-content">
                                 <div class="des-row">
                                         <p scope="col" class="des " >Data zakończenia:</p>
-                                        <input id="date_end" type="datetime-local" class="form-control" name="date_end" value="{{ $event->date_end }}">
+                                        <textarea id="date_end" type="datetime-local" class="form-control" name="date_end" disabled>{{ $event->date_end }}</textarea>
                                 </div>
                             </div>
                             <div style="margin-left:50px;
                             " class="left-content">
                                 <div class="des-row">
                                         <p scope="col" class="des " >Miasto:</p>
-                                        <input id="city" type="text" class="form-control" name="city" value="{{ $event->city  }}">
+                                        <textarea id="city" type="text" class="form-control" name="city" disabled>{{ $event->city  }}</textarea>
                                 </div>
                             </div>
                             <div style="margin-right:50px;
                             "class="right-content">
                                 <div class="des-row">
                                         <p scope="col" class="des " >Ulica:</p>
-                                        <input id="street" type="text" class="form-control" name="street" value="{{ $event->street  }}">
+                                        <textarea id="street" type="text" class="form-control" name="street" disabled>{{ $event->street  }}</textarea>
                                 </div>
                             </div>
                             <div style="margin-left:50px;
                             " class="left-content">
                                 <div class="des-row">
                                         <p scope="col" class="des " >Kod pocztowy:</p>
-                                        <input id="zip_code" type="text" class="form-control" name="zip_code" value="{{ $event->zip_code  }}">
+                                        <textarea id="zip_code" type="text" class="form-control" name="zip_code" disabled>{{ $event->zip_code  }}</textarea>
                                 </div>
                             </div>
                             <div style="margin-right:50px;
                             "class="right-content">
                                 <div class="des-row">
                                         <p scope="col" class="des " >Nr budynku:</p>
-                                        <input id="no_building" type="text" class="form-control" name="no_building" value="{{ $event->no_building }}">
+                                        <textarea id="no_building" type="text" class="form-control" name="no_building" disabled>{{ $event->no_building }}</textarea>
                                 </div>
                             </div>
                             <div style="margin-left:50px;
                             " class="left-content">
                                 <div class="des-row">
                                         <p scope="col" class="des " >Nr pomieszczenia:</p>
-                                        <input id="no_room" type="text" class="form-control" name="no_room" value="{{ $event->no_room  }}">
+                                        <textarea id="no_room" type="text" class="form-control" name="no_room" disabled>{{ $event->no_room  }}</textarea>
                                 </div>
                             </div>
                             <div style="margin-right:50px;
                             "class="right-content">
                                 <div class="des-row">
                                         <p scope="col" class="des " >Lokalizajca skrot:</p>
-                                        <input id="location_shortcut" type="text" class="form-control" name="location_shortcut" value="{{ $event->location_shortcut  }}">
+                                        <textarea id="location_shortcut" type="text" class="form-control" name="location_shortcut" disabled>{{ $event->location_shortcut  }}</textarea>
                                 </div>
                             </div>
                             <div style="margin-left:50px;
                             " class="left-content">
                                 <div class="des-row">
                                         <p scope="col" class="des " >Data rozpoczęcia publikacji:</p>
-                                        <input id="date_start_publi" type="datetime-local" class="form-control" name="date_start_publi" value="{{ $event->date_start_publi  }}">
+                                        <textarea id="date_start_publi" type="datetime-local" class="form-control" name="date_start_publi" disabled>{{ $event->date_start_publi  }}</textarea>
                                 </div>
                             </div>
                             <div style="margin-right:50px;
                             "class="right-content">
                                 <div class="des-row">
                                         <p scope="col" class="des " >Data zakończenia publikacji:</p>
-                                        <input id="date_end_publi" type="datetime-local" class="form-control" name="date_end_publi" value="{{ $event->date_end_publi  }}">
+                                        <textarea id="date_end_publi" type="datetime-local" class="form-control" name="date_end_publi"disabled>{{ $event->date_end_publi  }}</textarea>
                                 </div>
                             </div>
                             
@@ -135,7 +134,7 @@
                             class="left-content">
                                 <div class="des-row">
                                         <p scope="col" class="des " >Status:</p>
-                                        <select id="status" class="form-control" name="statuses_id" required autofocus>
+                                        <select id="status" class="form-control" name="statuses_id" required autofocus disabled>
                                         @foreach($statuses as $status)
                                             <option value="{{ $status->id }}" {{ $event->status_id == $status->id ? 'selected' : '' }}>{{ $status->name }}</option>
                                         @endforeach
@@ -145,15 +144,15 @@
                             <div style="margin-right:50px; margin-left:50px; margin-top:15px; margin-bottom:15px;
                             "class="right-content">
                                 <div class="des-row">
-                                        <p scope="col" class="des " >Opis:</p>
-                                        <input id="description" type="text" class="form-control" name="description" value="{{ $event->description  }}">
+                                        <p scope="col" class="des " >Opiss:</p>
+                                        <textarea id="description" class="form-control" name="description" disabled>{{ $event->description }}</textarea>
                                 </div>
                             </div>
-                            <div style="display: flex; justify-content: center;">
+                            <!-- <div style="display: flex; justify-content: center;">
                             <button type="submit" class="btn btn-primary">
                                 {{ __('Zapisz zmiany') }}
                             </button>
-                            </div>
+                            </div> -->
 
 
                    
@@ -161,7 +160,7 @@
                       
                   
                     </div>
-                    </form>
+                   
                     
                    <div class="members"  style=" display: grid;
                             grid-template-columns: 1fr 1fr;
@@ -217,7 +216,7 @@
                     @endforeach
                     </div>
                     
-                    <div class="details" style=" display: grid;
+                    <!-- <div class="details" style=" display: grid;
                             grid-template-columns: 1fr 1fr;
                             column-gap: 16px;
                             row-gap: 40px;">
@@ -268,7 +267,7 @@
                             
                     </div>
                     <div class="row mb-3">
-                            <label for="status" class="col-md-4 col-form-label text-md-end">{{ __('Opis') }}</label>
+                            <label for="status" class="col-md-4 col-form-label text-md-end">{{ __('Opiss') }}</label>
 
                             <div class="col-md-6">
                                 <input id="description" type="text" class="form-control" name="description" value="{{ $detail->description }}" >
@@ -309,17 +308,22 @@
                     </div>
                    
                     <div class="row mb-3">
+                       
                     @foreach ($groups as $group)
+                   
                         @if ($group->date_end > now())
 
                        
                         @if ($group->date_start > now())
+                        @if ($group->id == $detail->id)
                         <a href="{{ route('list',$group->participant_id,) }}" style=" margin-left:70px;margin-bottom:30px;width:250px;"class="btn btn-danger">{{ $group->title }}</a>
                                     @else
                                     <a href="{{ route('list', $group->id) }}" class="btn btn-danger disabled">{{ $group->title }}</a>
                                     @endif
+                                    @endif
                         @endif
                     @endforeach   
+                   
                     </div>
                    
                         
@@ -337,7 +341,7 @@
                 @endif  
                 @endforeach
                  
-                </div>
+                </div> -->
                 
                 </div>
             </div>
@@ -367,6 +371,7 @@ var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
               .done(function(response) {
                   alert("Success");
+                 
                   window.location.reload();
               })
               .fail(function(response) {

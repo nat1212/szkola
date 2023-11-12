@@ -151,6 +151,21 @@
                             </div>
                         </div>
                         <div class="row mb-3">
+                            <label for="type" class="col-md-4 col-form-label text-md-end">{{ __('Typ listy') }}</label>
+
+                            <div class="col-md-6">
+                            <select id="type" class="form-control @error('type') is-invalid @enderror" name="type" required autocomplete="type" autofocus>
+                                <option value="1" >Imienna</option>
+                                <option value="2" >Numeryczna</option>
+                            </select>                               
+                             @error('type')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="row mb-3">
                             <div class="col-md-6">  
                             <input id="events_id" type="hidden" value="{{ $event->id }}" class="form-control" name="events_id" required  autofocus>
                             </div>
@@ -161,6 +176,9 @@
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('Dodaj podwydarzenie') }}
                                 </button>
+                                <a href="{{ route('home') }}" class="btn btn-primary">
+            {{ __('Anuluj') }}
+        </a>
                             </div>
                         </div>
                     </form>
