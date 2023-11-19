@@ -30,17 +30,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Auth::routes(['verify'=>true]);
 
 Route::middleware(['auth','verified'])->group(function(){
     Route::get('create', function () {
         return view('create');
     });
-
-});
-
-
-
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    
 
 Route::get('/event/list',[EventController::class,'index'])->name('event.list')->middleware('auth');
 Route::delete('/event/{id}',[EventController::class,'destroy']);
@@ -81,7 +78,6 @@ Route::post('/user/update/last_name/{id}', [UserController::class, 'updateLastNa
 Route::get('/events/search', [EventController::class,'search'])->name('events.search');
 Route::get('/user_list',[EventController::class,'user_list'])->name('user_list')->middleware('auth');
 
-Auth::routes(['verify'=>true]);
 Route::get('/change-password', [App\Http\Controllers\HomeController::class, 'changePassword'])->name('change-password');
 Route::get('/zmien-haslo', [App\Http\Controllers\HomeController::class, 'zmienHaslo'])->name('zmien-haslo');
 Route::post('/change-password', [App\Http\Controllers\HomeController::class, 'updatePassword'])->name('update-password');
@@ -122,5 +118,10 @@ Route::delete('listnr-nr/{id}', [EventParticipantController::class, 'deletenr'])
 
 Route::get('/leave/{entryId}',[eventParticipantController::class,'leave']);
 Route::post('/signup', [eventParticipantController::class, 'signup']);
+
+});
+
+
+
 
 //Route::middleware()

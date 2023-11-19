@@ -36,6 +36,7 @@ return new class extends Migration
             $table->integer('number_seats')->nullable();
             $table->dateTime('date_start_rek')->nullable()->default(null);
             $table->dateTime('date_end_rek')->nullable()->default(null);
+            $table->integer('type')->nullable()->default(null);
             $table->integer('events_id')->unsigned();
             $table->timestamps();
             $table->timestamp('deleted_at')->nullable()->default(null);

@@ -30,9 +30,9 @@ return new class extends Migration
             $table->dateTime('date_confirmation')->nullable()->default(null);
             $table->integer('number_of_people')->nullable()->default(null);
             $table->string('comments', 45)->nullable()->default(null);
-            $table->integer('dictionary_schools_id')->unsigned();
-            $table->integer('participants_id')->unsigned();
-            $table->integer('users_id')->unsigned();
+            $table->integer('dictionary_schools_id')->nullable()->unsigned()->default(null);
+            $table->integer('participants_id')->nullable()->unsigned()->default(null);
+            $table->integer('users_id')->nullable()->unsigned()->default(null);
             $table->integer('events_id')->unsigned();
             $table->integer('event_details_id')->unsigned();
             $table->timestamps();

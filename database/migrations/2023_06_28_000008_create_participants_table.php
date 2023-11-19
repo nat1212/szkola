@@ -31,7 +31,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password',255)->nullable()->default(null);
             $table->string('sex', 45)->nullable()->default(null);
-            $table->date('birth_date')->nullable()->default(null);
+            $table->integer('role')->default(1);
             $table->string('idu_create', 45)->nullable()->default(null);
             $table->string('idu_mod', 45)->nullable()->default(null);
             $table->string('idu_delete', 45)->nullable()->default(null);
@@ -39,6 +39,8 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
             $table->timestamp('deleted_at')->nullable()->default(null);
+            $table->timestamp('last_login')->nullable();
+            $table->timestamp('last_logout')->nullable();
 
             $table->index(["dictionary_schools_id"]);
 

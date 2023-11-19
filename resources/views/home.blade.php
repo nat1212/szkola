@@ -36,25 +36,25 @@
         <div onclick="rat(1)" data-id="1"  class="side-bar-info">
             Profil
         </div>
-        <div  onclick="toggleExpand()" class="side-bar-underinfo" data-id="1">
+        <div  onclick="rating(0);toggleExpand()" class="side-bar-underinfo" data-id="1">
             Edycja profilu
         </div>
-        <div style="text-align: center;" onclick="rating(1)" class="side-bar-info" data-id="2">
+        <div style="text-align: center;" onclick="rating(1);closeExpand();" class="side-bar-info" data-id="2">
             Lista twoich wydarzeń
         </div>
-        <div onclick="rating(2)" class="side-bar-info"data-id="3">
+        <div onclick="rating(2);closeExpand();" class="side-bar-info"data-id="3">
             Wygasłe wydarzenia
         </div>
-        <div  onclick="rat(5)" class="side-bar-info"data-id="5">
+        <div  onclick="rat(5);closeExpand();" class="side-bar-info"data-id="5">
             Twoje zapisy
         </div>
-        <div   onclick="rating(3)" class="side-bar-underinfo" data-id="5">
+        <div   onclick="rating(3);closeExpand();" class="side-bar-underinfo" data-id="5">
             Aktualne
         </div>
-        <div  onclick="rating(6)" class="side-bar-underinfo" data-id="5">
+        <div  onclick="rating(6);closeExpand();" class="side-bar-underinfo" data-id="5">
             Zakończone
         </div>
-        <div onclick="rating(4)" class="side-bar-info"data-id="3">
+        <div onclick="rating(4);closeExpand();" class="side-bar-info"data-id="3">
             Zapis grupowy
         </div>
         <div  onclick="redirectToEventList(event)" class="side-bar-info">
@@ -703,6 +703,10 @@ var csrfToken = $('meta[name="csrf-token"]').attr('content');
              
     <script>
 
+function closeExpand() {
+    const gridWrapper2 = document.querySelector('.grid-wrapper2');
+    gridWrapper2.style.display = 'none';
+}
 
 
 function toggleExpand() {

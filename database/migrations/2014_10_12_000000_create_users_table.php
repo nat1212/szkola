@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
+            $table->integer('email_number')->nullable()->default(1);
             $table->string('password')->nullable()->default(null);
             $table->string('idu_create', 45)->nullable()->default(null);
             $table->string('idu_mod', 45)->nullable()->default(null);
