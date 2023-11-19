@@ -46,8 +46,8 @@ class EventDetailsController extends Controller
     public function create2($id)
     {
       $eventControllerInstance = new EventController();
-      $hasPermission = $eventControllerInstance->permissions();
-      if($hasPermission==1|$hasPermission==2|$hasPermission==3){
+      $hasPermission = $eventControllerInstance->permissions($id);
+      if($hasPermission==1||$hasPermission==2||$hasPermission==3){
         $event = Event::find($id);
         return view('create2',[
             'event' => $event
@@ -99,8 +99,8 @@ class EventDetailsController extends Controller
     public function edit(EventDetails $event)  
     {
       $eventControllerInstance = new EventController();
-      $hasPermission = $eventControllerInstance->permissions();
-      if($hasPermission==1|$hasPermission==2|$hasPermission==3){ 
+      $hasPermission = $eventControllerInstance->permissions($event->events_id);
+      if($hasPermission==1||$hasPermission==2||$hasPermission==3){ 
       $eventId = $event->events_id;
       $date = Event::find($eventId);
         return view("event.edit_details", [
@@ -151,9 +151,11 @@ class EventDetailsController extends Controller
      */
     public function destroy($id)
     {
+      $eventDetails = EventDetails::find($id);
+
       $eventControllerInstance = new EventController();
-      $hasPermission = $eventControllerInstance->permissions();
-      if($hasPermission==1|$hasPermission==2|$hasPermission==3){
+      $hasPermission = $eventControllerInstance->permissions($eventDetails->events_id);
+      if($hasPermission==1||$hasPermission==2||$hasPermission==3){
         $currentDateTime = Carbon::now();
         EventDetails::where('id', $id)->update(['deleted_at' => $currentDateTime]);
       

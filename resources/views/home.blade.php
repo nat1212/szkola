@@ -33,7 +33,7 @@
      
                     <div id="update-message-container"></div>
 <div class="side-bar">
-        <div onclick="rat(1)" class="side-bar-info">
+        <div onclick="rat(1)" data-id="1"  class="side-bar-info">
             Profil
         </div>
         <div  onclick="toggleExpand()" class="side-bar-underinfo" data-id="1">
@@ -45,7 +45,7 @@
         <div onclick="rating(2)" class="side-bar-info"data-id="3">
             Wygasłe wydarzenia
         </div>
-        <div  onclick="rat(5)" class="side-bar-info"data-id="3">
+        <div  onclick="rat(5)" class="side-bar-info"data-id="5">
             Twoje zapisy
         </div>
         <div   onclick="rating(3)" class="side-bar-underinfo" data-id="5">
@@ -67,7 +67,9 @@
                 <span>{{ __('Twój profil') }}</span>
                
                     <div class="profile2">
-                    <button type="button" class="btn btn-primary">Dodaj wydarzenie</button>
+                    <a style="text-decoration: none;" href="/create">
+                        <button type="button" class="btn btn-primary">Dodaj wydarzenie</button>
+                    </a>
                 @if (Auth::user()->last_logout)
             Ostatnio wylogowano:&nbsp;<span>{{ date('d-m-Y H:i', strtotime(Auth::user()->last_logout)) }}</span>
             @else
@@ -77,11 +79,7 @@
             </div>
                 
                 <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
+                   
 
 
 
@@ -115,17 +113,17 @@
                     <a  href="{{ route('event.show', $event->id) }}" class="btn btn-danger">Pokaż szczegóły</a>
                     <a style="margin-right:5px"href="{{ route('event.edit', $event->id) }}" class="btn btn-danger">Edycja</a>
                     
-                    <a data-id="1" class="btn btn-danger event-delete-btn">Usuń</a>
+                    <a data-id="{{ $event->id }}" class="btn btn-danger event-delete-btn">Usuń</a>
                 </td>
                 <td>
                     <a  style="margin-right:5px;width:150px"href="{{ route('addMember', $event->id)}}" class="btn btn-danger" >Dodaj współpracownika</a>
                     <a style="margin-right:5px"href="{{ route('create2', $event->id)}}" class="btn btn-danger" >Dodaj podwydarzenie</a>
                 </td>
              </tr>
-                        <div data-id="1" id="delete-dialog" class="dialog">
+                        <div data-id="{{ $event->id }}" id="delete-dialog" class="dialog">
                         <div class="dialog-content">
                             <p>Czy na pewno chesz usunąć wydarzenie?</p>
-                            <button data-id="{{ $event->id }}"class="btn btn-danger del">Tak</button>
+                            <button data-id="{{ $event->id }}"class="btn btn-danger del">{{ $event->id }}Tak</button>
                             <button class="btn btn-primary cancel-delete-button">Nie</button>
                         </div>
                     </div>
@@ -158,21 +156,21 @@
                 <td>{{ $info->date_start_rek->format('Y-m-d') }} {{  $info->date_start_rek->format('H:i') }} <br> {{ $info->date_end_rek->format('Y-m-d') }} {{ $info->date_end_rek->format('H:i') }}</td>
                 <td>
                     <a href="{{ route('event.edit_details', $info->id) }}" style="width:80px "class="btn btn-danger">Edycja</a>
-                    <a  data-id="2" class="btn btn-danger event-delete-btn">Usuń</a>
+                    <a  data-id="{{ $info->id }}" class="btn btn-danger event-delete-btn">Usuń</a>
                 </td>
                 <td>
                     @if($info->type==1)
-                    <a href="{{ route('zapisz', $info->id) }}" style="width:80px "class="btn btn-danger">Zapis_lisa imienna</a>
+                    <a href="{{ route('zapisz', $info->id) }}" style="width:80px "class="btn btn-danger">Lista</a>
                     @else
-                    <a href="{{ route('zapisznr', $info->id) }}" style="width:80px "class="btn btn-danger">Zapisxd</a>
+                    <a href="{{ route('zapisznr', $info->id) }}" style="width:80px "class="btn btn-danger">Lista</a>
                     @endif
                 </td>
          </tr>
                 
-            <div data-id="2" id="delete-dialog" class="dialog">
+            <div data-id="{{ $info->id }}" id="delete-dialog" class="dialog">
             <div class="dialog-content">
                 <p>Czy na pewno chesz usunąć podwydarzenie?</p>
-                <button data-id="{{ $info->id }}" class="btn btn-danger des" >Tak</button>
+                <button data-id="{{ $info->id }}" class="btn btn-danger usu" >{{ $info->id }}Tak</button>
                 <button class="btn btn-primary cancel-delete-button">Nie</button>
             </div>
         </div>
@@ -327,6 +325,7 @@
         <thead>
             <tr>
                 <th>Nazwa wydarzenia</th>
+                <th>Nazwa podwydarzenia</th>
                 <th>Liczba osób</th>
                 <th>Typ listy</th>
                 <th>Data wydarzenia</th>
@@ -340,6 +339,7 @@
             @if ($group->date_end > now())
           
             <tr>
+            <td>{{  $group->name}}</td>
             <td>{{  $group->title}}</td>
             <td>{{  $group->number_of_people}}</td>
             <td>{{  $group->type}}</td>
@@ -444,7 +444,7 @@
     <div class="dialog-content2">
         <p id="dese">Opis wydarzenia:</p>
         <p id="eve_dese"></p>
-        <button id="cancel2-button">Wróć</button>
+        <button class="btn btn-primary" id="cancel2-button">Wróć</button>
     </div>
 </div>
 </div>
@@ -618,7 +618,6 @@ function rating(x) {
   
    // const selectedButton = document.querySelector(`.side-bar-info${dataId}`);
     const underinfoElements = document.querySelectorAll(`.table-info${dataId}`);
-    
    // selectedButton.classList.add("selected");
     underinfoElements.forEach(div => div.classList.add("selected"));
 }
@@ -653,6 +652,32 @@ function toggleChildren(event) {
 <script>
 var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
+          $('.usu').click(function() {
+            
+              var eventId = $(this).data("id");
+             
+              
+              $.ajax({
+                  method: "DELETE",
+                  url: "http://szkola.test/event-details/" + eventId,
+                  headers: {
+                      'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+                  }
+              })
+
+              .done(function(response) {
+                  alert("Udało się");
+                  window.location.reload();
+              })
+              .fail(function(response) {
+                  alert("Errors");
+              });
+            
+          });
+          </script>
+<script>
+var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
           $('.del').click(function() {
               var eventId = $(this).data("id");
              
@@ -675,32 +700,7 @@ var csrfToken = $('meta[name="csrf-token"]').attr('content');
             
           });
           </script>
-             <script>
-var csrfToken = $('meta[name="csrf-token"]').attr('content');
-
-          $('.des').click(function() {
-            
-              var eventId = $(this).data("id");
              
-              
-              $.ajax({
-                  method: "DELETE",
-                  url: "http://szkola.test/event-details/" + eventId,
-                  headers: {
-                      'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
-                  }
-              })
-
-              .done(function(response) {
-                  alert("Udało się");
-                  window.location.reload();
-              })
-              .fail(function(response) {
-                  alert("Error");
-              });
-            
-          });
-          </script>
     <script>
 
 

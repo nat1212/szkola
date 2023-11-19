@@ -18,7 +18,7 @@
                             <label for="name" class="col-md-4 col-form-label text-md-end">{{ __('Nazwa') }}</label>
 
                             <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ session('name') }}" placeholder="Nazwa" required autocomplete="nazwa" autofocus>
+                                <textarea id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ session('name') }}" placeholder="Nazwa" required autocomplete="nazwa" autofocus></textarea>
                                 @error('name')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -115,7 +115,7 @@
                             <label for="description" class="col-md-4 col-form-label text-md-end">{{ __('Opis wydarzenia') }}</label>
 
                             <div class="col-md-6">
-                                <input id="description" type="text"  class="form-control @error('description') is-invalid @enderror" name="description" value="{{ session('description') }}" placeholder="Opis wydarzenia" required autocomplete="opis_wydarzenia" autofocus>
+                                <textarea id="description" type="text"  class="form-control @error('description') is-invalid @enderror" name="description" value="{{ session('description') }}" placeholder="Opis wydarzenia" required autocomplete="opis_wydarzenia" autofocus></textarea>
                                 @error('description')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>

@@ -86,7 +86,7 @@
         </button>
     @endif
 
-    <a href="{{ route('home', ['close_group_section' => 1]) }}" class="btn btn-primary" style="margin: 5px;">Anuluj</a>
+    <a href="{{ route('home', ['close_group_section' => 1]) }}" class="btn btn-primary" style="margin: 5px;">Wróć</a>
 </div>
 </form>
 <div class="button-container">
@@ -109,8 +109,8 @@
     <div id="leave-dialog" class="dialog"  style="display: none;">
     <div class="dialog-content">
         <p>Czy na pewno chesz usunąć grupę?</p>
-        <button id="confirm-leave-button">Tak</button>
-        <button id="cancel-leave-button">Nie</button>
+        <button class="btn btn-primary" id="confirm-leave-button">Tak</button>
+        <button class="btn btn-primary" id="cancel-leave-button">Nie</button>
     </div>
 </div>
 

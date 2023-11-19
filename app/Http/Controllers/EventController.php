@@ -93,11 +93,12 @@ class EventController extends Controller
         
         return view('event.list', ['events' => $events,'userEvents'=>$userEvents,'specificEventId' => $specificEventId,'searchMessage'=>$searchMessage]);
     }
-    public function permissions(){
+    public function permissions($id){
         $user_id = Auth::id(); 
         $currentDateTime = Carbon::now();
         $usersRoleId = DB::table('event_services')
         ->where('users_id', $user_id)
+        ->where('events_id', $id)
         ->where('date_start', '<', $currentDateTime)
         ->where('date_end', '>', $currentDateTime)
         ->whereNull('deleted_at')
@@ -306,7 +307,7 @@ class EventController extends Controller
      */
     public function edit(Event $event)  
     {
-        $hasPermission = $this->permissions();
+        $hasPermission = $this->permissions($event->id);
         if($hasPermission==1 || $hasPermission==2 ){
             return view("event.edit", [
                 'event' => $event,
@@ -412,7 +413,7 @@ class EventController extends Controller
      */
     public function destroy($id)
     {
-        $hasPermission = $this->permissions();
+        $hasPermission = $this->permissions($id);
         if($hasPermission==1){
             $currentDateTime = Carbon::now();
 

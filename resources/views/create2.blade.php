@@ -41,7 +41,7 @@
                             <label for="title" class="col-md-4 col-form-label text-md-end">{{ __('Tytuł') }}</label>
 
                             <div class="col-md-6">
-                                <input id="title" type="text"  class="form-control @error('title') is-invalid @enderror" name="title" value="{{ old('title') ?? session('title') }}" required autocomplete="title" autofocus>
+                                <textarea id="title" type="text"  class="form-control @error('title') is-invalid @enderror" name="title" value="{{ old('title') ?? session('title') }}" required autocomplete="title" autofocus></textarea>
                                 @error('title')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -90,7 +90,7 @@
                             <label for="description" class="col-md-4 col-form-label text-md-end">{{ __('Opis występu') }}</label>
 
                             <div class="col-md-6">
-                                <input id="description" type="text"  class="form-control @error('description') is-invalid @enderror" name="description" value="{{ old('description') ?? session('description') }}" required autocomplete="description" autofocus>
+                                <textarea id="description" type="text"  class="form-control @error('description') is-invalid @enderror" name="description" value="{{ old('description') ?? session('description') }}" required autocomplete="description" autofocus></textarea>
                                 @error('description')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -103,7 +103,7 @@
                             <label for="comments" class="col-md-4 col-form-label text-md-end">{{ __('Komentarz') }}</label>
 
                             <div class="col-md-6">
-                                <input id="comments" type="text" class="form-control @error('comments') is-invalid @enderror" name="comments" value="{{ old('comments') ?? session('comments') }}" required autocomplete="comments" autofocus>
+                                <textarea id="comments" type="text" class="form-control @error('comments') is-invalid @enderror" name="comments" value="{{ old('comments') ?? session('comments') }}" required autocomplete="comments" autofocus></textarea>
                                 @error('comments')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>

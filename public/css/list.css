@@ -229,7 +229,8 @@ background-color: #a9a8aa;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     text-align: center;
-    width: 50%; 
+    width: 90%; 
+    max-width: 800px;
 }
 
 .dialog-content2 {

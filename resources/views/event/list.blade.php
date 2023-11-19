@@ -128,13 +128,13 @@
               <p scope="col" class="des4">{{ $info->date_end->format('d-m-Y') }} godz. {{$info->date_end->format('H:i') }}</p>
             </div>
      
-            @if (strtotime($info->date_start) > strtotime('now'))
+            @if (strtotime($info->date_start_rek) > strtotime('now'))
             <div class="des-row2">
               <p scope="col" class="des3">Rozpoczęcie zapisów:</p>
               <p scope="col" class="des4">{{ $info->date_start_rek->format('d-m-Y')}} godz. {{$info->date_start_rek->format('H:i') }}</p>
             </div>
             @endif
-            @if (strtotime($info->date_start) > strtotime('now'))
+            @if (strtotime($info->date_start_rek) < strtotime('now'))
             <div class="des-row2">
               <p scope="col" class="des3">Zakończenie zapisów:</p>
               <p scope="col" class="des4">{{ $info->date_end_rek->format('d-m-Y') }} godz. {{$info->date_end_rek->format('H:i') }}</p>
@@ -219,9 +219,9 @@
 <div id="agreed22" class="dialog" style="display: none;">
 <div class="dialog-background">
     <div class="dialog-content">
-        <p id="dese">Opis wydarzenia:</p>
+        <p id="dese">Opis wydarzeniaa:</p>
         <p id="eve_dese"></p>
-        <button id="cancel-button">Wróć</button>
+        <button class="btn btn-primary" id="cancel-button">Wróć</button>
     </div>
 </div>
 </div>
@@ -230,8 +230,8 @@
 <div id="agreed" class="dialog" style="display: none;">
     <div class="dialog-content2">
         <p>Czy na pewno chcesz się zapisać na wydarzenie?</p>
-        <button id="confirm-agreed-button">Tak</button>
-        <button id="cancel-agreed-button">Nie</button>
+        <button class="btn btn-primary" id="confirm-agreed-button">Tak</button>
+        <button class="btn btn-primary" id="cancel-agreed-button">Nie</button>
     </div>
     </div>
 

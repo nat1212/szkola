@@ -33,8 +33,8 @@ class EventServicesController extends Controller
     public function addMember($id)
     {
       $eventControllerInstance = new EventController();
-      $hasPermission = $eventControllerInstance->permissions();
-      if($hasPermission==1){
+      $hasPermission = $eventControllerInstance->permissions($id);
+      if($hasPermission !== null &&($hasPermission==1 || $hasPermission==2)){
       $date = Event::find($id);
         return view('addMember',[
             'event' => $id,

@@ -474,20 +474,41 @@ public function freeSeets3($id, $NumberParticipants,$idd){
         $eventDetails->number_seats += 1;
         $eventDetails->save();
     }
-    public function delete($id){
+    public function delete($id)
+{
+    try {
         $currentDateTime = Carbon::now();
-        
-        $Parti_id = eventParticipant::where('id', $id)->value('event_details_id');
+
+        $Parti_idd = eventParticipant::where('id', $id)->value('event_details_id');
+
 
         eventParticipant::where('id', $id)->update(['deleted_at' => $currentDateTime]);
-        $updatedCount = eventParticipantList::where('event_participants_id', $id)->update(['deleted_at' => $currentDateTime]);
+  
+        
+        $hasDeletedAt = eventParticipantList::where('event_participants_id', $id)->whereNull('deleted_at')->exists();
 
-        $eventDetails = EventDetails::find($Parti_id);
-        $eventDetails->number_seats += $updatedCount;
-        $eventDetails->save();
+
+        if ($hasDeletedAt) {
        
+            $updatedCount = eventParticipantList::where('event_participants_id', $id)
+                ->whereNull('deleted_at')
+                ->update(['deleted_at' => $currentDateTime]);
+        }
 
+
+        $numberOfPeople = eventParticipant::where('id', $id)->value('number_of_people');
+        $eventDetails = EventDetails::find($Parti_idd);
+        $eventDetails->number_seats += $numberOfPeople;
+        $eventDetails->save();
+
+        $statusMessage = 'Udało Ci się usunąć grupę!';
+        return redirect()->route('home')->with('status', $statusMessage)->with('executeJs', true);
+
+    } catch (\Exception) {
+        $error = 'Wystąpił błąd podczas usuwania listy:';
+        return redirect()->route('home')->withErrors(['status' => $error])->with('executeJs', true);
     }
+}
     // NOWE LISTY 
     public function storenr(Request $request){
 

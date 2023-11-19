@@ -73,7 +73,7 @@ class HomeController extends Controller
         ->where('event_participants.users_id', $user_id)
         ->whereNull('event_participants.deleted_at')
         ->whereNotNull('event_participants.number_of_people')
-        ->select('event_details.title', 'event_details.date_start', 'event_details.date_end', 'event_details.speaker_first_name','event_details.speaker_last_name','event_details.description', 'event_participants.id as participant_id','event_participants.number_of_people','event_details.id','event_participants.created_at','event_details.type')
+        ->select('event_details.title', 'event_details.date_start', 'event_details.date_end', 'event_details.speaker_first_name','event_details.speaker_last_name','event_details.description', 'event_participants.id as participant_id','event_participants.number_of_people','event_details.id','event_participants.created_at','event_details.type','events.name')
         ->orderBy('event_details.date_start', 'asc')
         ->get();
     
