@@ -2,6 +2,7 @@
 @section('styles')
 
 <link rel="stylesheet" href="{{asset('css/footer3.css')}}">
+<link rel="stylesheet" href="{{asset('css/footer2.css')}}">
 @endsection
 @section('content')
 <div class="container">
@@ -79,6 +80,12 @@
             </div>
         </div>
     </div>
+    <div id="leave-dialog" class="dialog"  style="display: none;">
+    <div class="dialog-content">
+        <p>Czy na pewno chesz usunąć grupę?</p>
+        <button class="btn btn-primary" id="confirm-leave-button">Tak</button>
+        <button class="btn btn-primary" id="cancel-leave-button">Nie</button>
+    </div>
 </div>
 <div class="footer">
     <p class="footer-text">@Sławek&Natan Company</p>
@@ -88,35 +95,31 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   <script>
-    var csrfToken = $('meta[name="csrf-token"]').attr('content');
+      var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-    $('.dele').click(function() {
-        var eventId = $(this).data("id");
-        var confirmed = window.confirm("Czy na pewno chcesz usunąć listę?");
-        if (confirmed) {
-            $.ajax({
-                method: "DELETE",
-                url: "http://szkola.test/listnr-nr/" + eventId,
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken 
-                },
-                success: function(data) {
-              
-                    if (data.success) {
-                        alert("Udało się usunąć listę!");
-                        window.location.replace("{{ route('home') }}");
-                    } else {
-               
-                        alert("Wystąpił błąd: " + data.message);
-                    }
-                },
-                error: function(xhr, textStatus, errorThrown) {
-                
-                    alert("Wystąpił błąd podczas żądania: " + textStatus);
-                }
-            });
-        }
+$('.dele').click(function() {
+    var eventId = $(this).data("id");
+
+    $('#leave-dialog').show();
+
+    $('#confirm-leave-button').click(function() {
+        $('#leave-dialog').hide();
+        $.ajax({
+            method: "DELETE",
+            url: "http://szkola.test/list-xd/" + eventId,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            complete: function() {
+                window.location.href = '/home';
+            }
+        });
     });
+
+    $('#cancel-leave-button').click(function() {
+        $('#leave-dialog').hide();
+    });
+});
 </script>
 
 <script>

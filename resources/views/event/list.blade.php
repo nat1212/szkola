@@ -217,13 +217,13 @@
 </div>
 
 <div id="agreed22" class="dialog" style="display: none;">
-<div class="dialog-background">
+
     <div class="dialog-content">
         <p id="dese">Opis wydarzeniaa:</p>
         <p id="eve_dese"></p>
         <button class="btn btn-primary" id="cancel-button">Wróć</button>
     </div>
-</div>
+
 </div>
 
 
