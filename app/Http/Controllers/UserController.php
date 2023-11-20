@@ -29,7 +29,8 @@ class UserController extends Controller
     ]);
 
     if ($validator->fails()) {
-        return new JsonResponse(['success' => false, 'message' => 'Wystąpił błąd walidacji danych.']);
+        return redirect('/home')->with('error', 'Wystąpił błąd walidacji danych.');
+
     }
 
     $dataToUpdate = [];
@@ -47,10 +48,11 @@ class UserController extends Controller
             // Sprawdzanie unikalności adresu e-mail
             $existingParticipant = User::where('email', $newEmail)->first();
             if ($existingParticipant) {
-                return new JsonResponse(['message' => 'Adres e-mail jest już zajęty.']);
+                return redirect()->back()->with('error', 'Email już jest zajęty.');
             } else {
                 $dataToUpdate['email'] = $newEmail;
                 $dataToUpdate['email_verified_at'] = null;
+                $dataToUpdate['email_number'] = 2;
                 $user->update($dataToUpdate);
                 $user->sendEmailVerificationNotification($newEmail);
             }
@@ -60,8 +62,8 @@ class UserController extends Controller
    
     $user->update($dataToUpdate);
 
-    return redirect()->route('home');
-    return new JsonResponse(['success' => true, 'message' => 'Profil został zaktualizowany.']);
+    
+    return redirect('/home')->with('success', 'Profil został zaktualizowany.');
 }
     
 }

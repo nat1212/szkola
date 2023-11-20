@@ -8,7 +8,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">{{ __('Chnage Password') }}</div>
+                    <div class="card-header">{{ __('Ustaw hasło') }}</div>
 
                     <form action="{{ route('update-password') }}" method="POST">
                         @csrf
@@ -32,7 +32,7 @@
                                 @enderror
                             </div>
                             <div class="mb-3">
-                                <label for="newPasswordInput" class="form-label">New Password</label>
+                                <label for="newPasswordInput" class="form-label">Hasło</label>
                                 <input name="new_password" type="password" class="form-control @error('new_password') is-invalid @enderror" id="newPasswordInput"
                                     placeholder="New Password">
                                 @error('new_password')
@@ -40,7 +40,7 @@
                                 @enderror
                             </div>
                             <div class="mb-3">
-                                <label for="confirmNewPasswordInput" class="form-label">Confirm New Password</label>
+                                <label for="confirmNewPasswordInput" class="form-label">Powtórz hasło</label>
                                 <input name="new_password_confirmation" type="password" class="form-control" id="confirmNewPasswordInput"
                                     placeholder="Confirm New Password">
                             </div>
@@ -48,7 +48,7 @@
                         </div>
 
                         <div class="card-footer">
-                            <button class="btn btn-success">Submit</button>
+                            <button class="btn btn-success">Zapisz</button>
                         </div>
 
                     </form>

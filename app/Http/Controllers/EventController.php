@@ -242,7 +242,8 @@ class EventController extends Controller
         $action = 'Utworzył wydarzenie';
         Log::channel('php_file')->info('Użytkownik ' . $user->email . ': ' . $action);
 
-        return redirect(route('home'));
+        return redirect('/home')->with('success', 'Udało Ci się utworzyć wydarzenie.');
+
         
     }
 
@@ -316,8 +317,9 @@ class EventController extends Controller
             ]);
         }
         else{
-            $error = 'Nie masz uprawnień do edycji.';
-            return redirect()->route('home')->withErrors(['message' => $error]);
+          
+            return redirect('/home')->with('error', 'Nie masz uprawnień.');
+
         }
         
            
@@ -402,7 +404,9 @@ class EventController extends Controller
         $action = 'Edytował wydarzenie o id';
         Log::channel('php_file')->info('Użytkownik ' . $user->email . ': ' . $action.': '.$event->id );
 
-        return redirect(route('home'));
+       
+        return redirect('/home')->with('success', 'Udało Ci się edytować wydarzenie.');
+
     }
 
     /**

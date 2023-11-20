@@ -52,7 +52,7 @@
                         <div class="row mb-3">
                             <label for="date_start" class="col-md-4 col-form-label text-md-end">{{ __('Data wydarzenia głównego') }}</label>
                             <div class="col-md-6">
-                            <input id="events_start"  value="{{$event->date_start . ' - ' . $event->date_end}}" class="form-control" name="event_start" required autofocus>
+                            <input id="events_start"  value="{{$event->date_start->format('Y-m-d H:i') . ' - ' . $event->date_end->format('Y-m-d H:i')}}" class="form-control" name="event_start" disabled autofocus>
                             </div>                        
                         </div>
                                 <input id="events_start" type="hidden" value="{{ $event->date_start }}" class="form-control" name="event_start" required autofocus>
@@ -103,7 +103,7 @@
                             <label for="comments" class="col-md-4 col-form-label text-md-end">{{ __('Komentarz') }}</label>
 
                             <div class="col-md-6">
-                                <textarea id="comments" type="text" class="form-control @error('comments') is-invalid @enderror" name="comments" value="{{ old('comments') ?? session('comments') }}" required autocomplete="comments" autofocus></textarea>
+                                <textarea id="comments" type="text" class="form-control @error('comments') is-invalid @enderror" name="comments" value="{{ old('comments') ?? session('comments') }}"  autocomplete="comments" autofocus></textarea>
                                 @error('comments')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>

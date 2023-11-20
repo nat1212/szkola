@@ -49,13 +49,17 @@ class EventDetailsController extends Controller
       $hasPermission = $eventControllerInstance->permissions($id);
       if($hasPermission==1||$hasPermission==2||$hasPermission==3){
         $event = Event::find($id);
+        if ($event) {
+          $event->date_start = Carbon::parse($event->date_start);
+          $event->date_end = Carbon::parse($event->date_end);
+        }
         return view('create2',[
             'event' => $event
           ]);
         }
         else{
-          $error = 'Nie masz uprawnień!';
-          return redirect()->route('home')->withErrors(['message' => $error]);
+
+          return redirect('/home')->with('error', 'Nie masz uprawnień.');
       }
     }
       /**
@@ -85,7 +89,8 @@ class EventDetailsController extends Controller
         $action = 'Utworzył pod wydarzenie dla wydarzenia o id';
         Log::channel('php_file')->info('Użytkownik ' . $user->email . ': ' . $action.': '.$request->events_id );
           
-        return redirect()->route('home');
+      
+        return redirect('/home')->with('success', 'Udało Ci utworzyć podwydarzenie.');
           
       }
 
@@ -108,8 +113,7 @@ class EventDetailsController extends Controller
         'date'=>$date,
         ]);}
         else{
-          $error = 'Nie masz uprawnień!';
-          return redirect()->route('home')->withErrors(['message' => $error]);
+          return redirect('/home')->with('error', 'Nie masz uprawnień.');
       }
     }
       /**
@@ -135,7 +139,9 @@ class EventDetailsController extends Controller
         $user=User::find($userId);
         $action = 'Edytował pod wydarzenie o id';
         Log::channel('php_file')->info('Użytkownik ' . $user->email . ': ' . $action.': '.$event->id );
-        return redirect(route('event.list'));
+
+        return redirect('/home')->with('success', 'Udało Ci się edytować wydarzenie.');
+
     }
        
         
@@ -171,6 +177,7 @@ class EventDetailsController extends Controller
     else{
       $error = 'Nie masz uprawnień!';
       return redirect()->route('home')->withErrors(['message' => $error]);
+      
   }
   }
   

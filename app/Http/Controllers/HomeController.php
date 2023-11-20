@@ -165,6 +165,6 @@ public function updatePassword(Request $request)
         $action = 'Zmienił swoje hasło';
         Log::channel('php_file')->info('Użytkownik ' . $user->email . ': ' . $action);
 
-        return back()->with("status", "Udało się ustawić nowe hasło!");
+        return redirect('/home')->with('success', 'Udało Ci się ustawić nowe hasło.');
 }
 }

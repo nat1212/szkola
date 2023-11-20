@@ -26,7 +26,7 @@ class VerificationController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = 'change-password';
+    protected $redirectTo;
 
     /**
      * Create a new controller instance.
@@ -38,5 +38,15 @@ class VerificationController extends Controller
         $this->middleware('auth');
         $this->middleware('signed')->only('verify');
         $this->middleware('throttle:6,1')->only('verify', 'resend');
+
+        // Ustawienie $redirectTo w zależności od warunku
+        if (auth()->check() && auth()->user()->email_number == 1) {
+            $this->redirectTo = 'change-password';
+        } else {
+            $this->redirectTo = 'home';
+        }
     }
+
+    // Reszta kodu VerificationController, jeśli istnieje
+
 }

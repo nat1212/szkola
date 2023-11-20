@@ -56,6 +56,7 @@ class EventServicesController extends Controller
         if (!$user) {
             $error = 'Nie ma podanego użytkownika.';
             return redirect()->back()->withErrors(['message' => $error]);
+            
         }
         
         $users_id = $user->id;

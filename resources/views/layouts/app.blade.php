@@ -29,7 +29,7 @@
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
+                <a class="navbar-brand" href="{{ url('/home') }}">
                     {{ config('app.name', 'Wersja_robocza') }}
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -69,7 +69,7 @@
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href = "{{ route('home') }}">Profil</a>
-                                    <a class="dropdown-item" href = "{{ route('event.list') }}">Wydarzenia</a>
+                                    
                                     @if(Request::is('home*'))
                                     <div class="H2p">
                                     <a  onclick="toggleExpand()" class="dropdown-item"  href="#">
@@ -81,6 +81,19 @@
                                     <a onclick="rating(2)" class="dropdown-item"  href="#">
                                     {{ __(' Wygasłe wydarzenia') }}
                                     </a>
+                                    <a onclick="rating(3)" class="dropdown-item"  href="#">
+                                    {{ __(' Twoje zapisy') }}
+                                    </a>
+                                    <a onclick="rating(6)" class="dropdown-item"  href="#">
+                                    {{ __(' Twoje zapisy zakończone') }}
+                                    </a>
+                                    <a onclick="rating(4)" class="dropdown-item"  href="#">
+                                    {{ __(' Zapis grupowy') }}
+                                    </a>
+                                    <a onclick="rating(5)" class="dropdown-item"  href="#">
+                                    {{ __(' Zapis grupowy zakończony') }}
+                                    </a>
+                                    <a class="dropdown-item" href = "{{ route('event.list') }}">Wydarzenia</a>
                                     </div>
                                     
                                     @endif

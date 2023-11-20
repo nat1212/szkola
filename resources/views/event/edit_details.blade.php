@@ -100,7 +100,7 @@
                             <label for="comments" class="col-md-4 col-form-label text-md-end">{{ __('Komentarz') }}</label>
 
                             <div class="col-md-6">
-                                <input id="comments" type="text" class="form-control @error('comments') is-invalid @enderror" name="comments" value="{{ $event->comments}}" required autocomplete="comments" autofocus>
+                                <input id="comments" type="text" class="form-control @error('comments') is-invalid @enderror" name="comments" value="{{ $event->comments}}"  autocomplete="comments" autofocus>
                                 @error('comments')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>

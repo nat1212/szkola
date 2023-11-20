@@ -5,6 +5,11 @@
 @endsection
 @section('content')
 <div class="container">
+@if(session('success') || session('error'))
+    <div id="notification-message" class="alert alert-{{ session('success') ? 'success' : 'danger' }}">
+        {{ session('success') ? session('success') : session('error') }}
+    </div>
+@endif   
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
@@ -149,4 +154,13 @@
         $('#role-description').text(roleDescription);
     });
 });</script>
+<script>
+    var notificationMessage = document.getElementById('notification-message');
+
+    if (notificationMessage) {
+        setTimeout(function() {
+            notificationMessage.style.display = 'none';
+        }, 3000);
+    }
+</script>
 @endsection

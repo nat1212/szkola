@@ -21,15 +21,11 @@
         {{ $errors->first('status') }}
     </div>
 @endif
-@if($errors->any())
-    <div class="alert alert-danger error-message">
-        <ul>
-            @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
+@if(session('success') || session('error'))
+    <div id="notification-message" class="alert alert-{{ session('success') ? 'success' : 'danger' }}">
+        {{ session('success') ? session('success') : session('error') }}
     </div>
-     @endif                 
+@endif            
      
                     <div id="update-message-container"></div>
 <div class="side-bar">
@@ -39,11 +35,14 @@
         <div  onclick="rating(0);toggleExpand()" class="side-bar-underinfo" data-id="1">
             Edycja profilu
         </div>
-        <div style="text-align: center;" onclick="rating(1);closeExpand();" class="side-bar-info" data-id="2">
+        <div style="text-align: center;" onclick="rat(2)" data-id="1"  class="side-bar-info">
             Lista twoich wydarzeń
         </div>
-        <div onclick="rating(2);closeExpand();" class="side-bar-info"data-id="3">
-            Wygasłe wydarzenia
+        <div style="text-align: center;" onclick="rating(1);closeExpand();" class="side-bar-underinfo" data-id="2">
+            Aktualne
+        </div>
+        <div onclick="rating(2);closeExpand();" class="side-bar-underinfo"data-id="2">
+            Wygasłe 
         </div>
         <div  onclick="rat(5);closeExpand();" class="side-bar-info"data-id="5">
             Twoje zapisy
@@ -54,8 +53,14 @@
         <div  onclick="rating(6);closeExpand();" class="side-bar-underinfo" data-id="5">
             Zakończone
         </div>
-        <div onclick="rating(4);closeExpand();" class="side-bar-info"data-id="3">
-            Zapis grupowy
+        <div  onclick="rat(3)" data-id="1"  class="side-bar-info">
+             Zapis grupowy
+        </div>
+        <div onclick="rating(4);closeExpand();" class="side-bar-underinfo"data-id="3">
+            Aktualne
+        </div>
+        <div onclick="rating(5);closeExpand();" class="side-bar-underinfo"data-id="3">
+            Zakończone
         </div>
         <div  onclick="redirectToEventList(event)" class="side-bar-info">
             Wszyskie wydarzenia
@@ -67,14 +72,15 @@
                 <span>{{ __('Twój profil') }}</span>
                
                     <div class="profile2">
-                    <a style="text-decoration: none;" href="/create">
-                        <button type="button" class="btn btn-primary">Dodaj wydarzenie</button>
-                    </a>
+                    
                 @if (Auth::user()->last_logout)
             Ostatnio wylogowano:&nbsp;<span>{{ date('d-m-Y H:i', strtotime(Auth::user()->last_logout)) }}</span>
             @else
      
              @endif
+             <a style="text-decoration: none;" href="/create">
+                        <button type="button" class="btn btn-primary">Dodaj wydarzenie</button>
+                    </a>
             </div>
             </div>
                 
@@ -104,11 +110,11 @@
           
             @if ($event->date_end > now())
             <tr class="parent" onclick="toggleChildren(event)">
-                <td class="toggle-cell">{{  $event->name}}</td>
-                <td class="toggle-cell">{{  $event->location_shortcut}}</td>
-                <td class="toggle-cell">{{  $event->date_start->format('d-m-Y')}} {{$event->date_start->format('H:i') }}<br>{{  $event->date_end->format('d-m-Y')}} {{$event->date_end->format('H:i') }}</td>
-                <td class="toggle-cell"> {{  $event->date_start_publi->format('d-m-Y')}} {{$event->date_start_publi->format('H:i') }}<br>{{  $event->date_end_publi->format('d-m-Y')}} {{$event->date_end_publi ->format('H:i') }}</td>
-                <td class="toggle-cell"> {{  $event->status->name}}</td>
+                <td title="Kliknij na mnie!" class="toggle-cell">{{  $event->name}}</td>
+                <td title="Kliknij na mnie!" class="toggle-cell">{{  $event->location_shortcut}}</td>
+                <td  title="Kliknij na mnie!" class="toggle-cell">{{  $event->date_start->format('d-m-Y')}} {{$event->date_start->format('H:i') }}<br>{{  $event->date_end->format('d-m-Y')}} {{$event->date_end->format('H:i') }}</td>
+                <td title="Kliknij na mnie!" class="toggle-cell"> {{  $event->date_start_publi->format('d-m-Y')}} {{$event->date_start_publi->format('H:i') }}<br>{{  $event->date_end_publi->format('d-m-Y')}} {{$event->date_end_publi ->format('H:i') }}</td>
+                <td title="Kliknij na mnie!"class="toggle-cell"> {{  $event->status->name}}</td>
                 <td> 
                     <a  href="{{ route('event.show', $event->id) }}" class="btn btn-danger">Pokaż szczegóły</a>
                     <a style="margin-right:5px"href="{{ route('event.edit', $event->id) }}" class="btn btn-danger">Edycja</a>
@@ -164,6 +170,8 @@
                     @else
                     <a href="{{ route('zapisznr', $info->id) }}" style="width:80px "class="btn btn-danger">Lista</a>
                     @endif
+                    <a class="btn btn-danger show-sub-event" data-result-id="{{ $info->id }}" data-description="{{ $info->description }}">Pokaż szczegóły</a>
+
                 </td>
          </tr>
                 
@@ -202,12 +210,12 @@
           
             @if ($event->date_end <= now())
             <tr class="parent">
-            <tr class="parent" onclick="toggleChildren(event)">
-                <td class="toggle-cell">{{  $event->name}}</td>
-                <td class="toggle-cell">{{  $event->location_shortcut}}</td>
-                <td class="toggle-cell">{{  $event->date_start->format('d-m-Y')}} {{$event->date_start->format('H:i') }}<br>{{  $event->date_end->format('d-m-Y')}} {{$event->date_end->format('H:i') }}</td>
-                <td class="toggle-cell"> {{  $event->date_start_publi->format('d-m-Y')}} {{$event->date_start_publi->format('H:i') }}<br>{{  $event->date_end_publi->format('d-m-Y')}} {{$event->date_end_publi ->format('H:i') }}</td>
-                <td class="toggle-cell"> {{  $event->status->name}}</td>
+            <tr  class="parent" onclick="toggleChildren(event)">
+                <td title="Kliknij na mnie!" class="toggle-cell">{{  $event->name}}</td>
+                <td title="Kliknij na mnie!" class="toggle-cell">{{  $event->location_shortcut}}</td>
+                <td title="Kliknij na mnie!" class="toggle-cell">{{  $event->date_start->format('d-m-Y')}} {{$event->date_start->format('H:i') }}<br>{{  $event->date_end->format('d-m-Y')}} {{$event->date_end->format('H:i') }}</td>
+                <td title="Kliknij na mnie!" class="toggle-cell"> {{  $event->date_start_publi->format('d-m-Y')}} {{$event->date_start_publi->format('H:i') }}<br>{{  $event->date_end_publi->format('d-m-Y')}} {{$event->date_end_publi ->format('H:i') }}</td>
+                <td title="Kliknij na mnie!" class="toggle-cell"> {{  $event->status->name}}</td>
            
             </tr>
 
@@ -362,7 +370,49 @@
        
     </table>
 </div>
-
+<div class="table-info" data-id="5">
+                
+        <table id=""  class="table" style="width:100%">
+        <thead>
+            <tr>
+                <th>Nazwa wydarzenia</th>
+                <th>Nazwa podwydarzenia</th>
+                <th>Liczba osób</th>
+                <th>Typ listy</th>
+                <th>Data wydarzenia</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+       
+     
+            @foreach ($groups as $group)
+            @if ($group->date_end < now())
+          
+            <tr>
+            <td>{{  $group->name}}</td>
+            <td>{{  $group->title}}</td>
+            <td>{{  $group->number_of_people}}</td>
+            <td>{{  $group->type}}</td>
+            <td> {{  $group->date_start->format('d-m-Y')}} godz. {{$group->date_start->format('H:i') }}<br>{{  $group->date_end->format('d-m-Y')}} godz. {{$group->date_end->format('H:i') }}</td>
+            <td>
+             @if( $group->type==1)
+            <a href="{{ route('list',$group->participant_id,) }}" data-date-start="{{ $group->date_start->format('Y-m-d H:i:s') }}" class="btn btn-danger leave">Lista</a>
+            @else
+            <a href="{{ route('listnr',$group->participant_id,) }}" data-date-start="{{ $group->date_start->format('Y-m-d H:i:s') }}" class="btn btn-danger leave">Lista</a>     </td>
+            @endif
+            </tr>
+          
+            
+            @endif
+            @endforeach
+            
+            
+           
+            </tbody>
+       
+    </table>
+</div>
                 <!-- <h4 class="expand-toggle" onclick="redirectToEventUserList()">Lista twoich wydarzeń:  <span class="toggle-icon">►</span></h4>
 
                     <div class="spacer"></div>
@@ -568,6 +618,7 @@ function rat(x) {
   
 }
 
+
 </script>
 <script>
     var leaveButtons = document.querySelectorAll('.event-delete-btn');
@@ -621,7 +672,18 @@ function rating(x) {
    // selectedButton.classList.add("selected");
     underinfoElements.forEach(div => div.classList.add("selected"));
 }
+document.addEventListener('DOMContentLoaded', function() {
+    const underinfoElements = document.querySelectorAll('.side-bar-underinfo');
 
+    underinfoElements.forEach(element => {
+        element.addEventListener('click', function() {
+     
+            underinfoElements.forEach(div => div.classList.remove('active'));
+
+            this.classList.add('active');
+        });
+    });
+});
 </script>
 <script>
 function toggleChildren(event) {
@@ -670,7 +732,7 @@ var csrfToken = $('meta[name="csrf-token"]').attr('content');
                   window.location.reload();
               })
               .fail(function(response) {
-                  alert("Errors");
+                  alert("Nie udało się");
               });
             
           });
@@ -691,11 +753,11 @@ var csrfToken = $('meta[name="csrf-token"]').attr('content');
               })
 
               .done(function(response) {
-                  alert("Success");
+                  alert("Udało się");
                   window.location.reload();
               })
               .fail(function(response) {
-                  alert("Error");
+                  alert("Nie udało się");
               });
             
           });
@@ -785,11 +847,16 @@ document.getElementById('confirm-button').addEventListener('click', function() {
                         location.reload();
                     }, 1500); 
                 } else {
-                    alert('Wystąpił błąd podczas aktualizacji profilu.');
+                    var updateMessage = document.getElementById('update-message2');
+                    updateMessage.textContent = response.message;
+                    updateMessage.style.display = 'block'; 
+                    setTimeout(function() {
+                        updateMessage.style.display = 'none'; 
+                        location.reload();
+                    }, 3000);
                 }
-            } else {
-                alert('Wystąpił błąd podczas wysyłania żądania.');
-            }
+            } 
+            loadingElement.style.display = 'none';
         }
     };
 
@@ -814,4 +881,13 @@ document.getElementById('cancel-button').addEventListener('click', function() {
 
 </script>
 
+<script>
+    var notificationMessage = document.getElementById('notification-message');
+
+    if (notificationMessage) {
+        setTimeout(function() {
+            notificationMessage.style.display = 'none';
+        }, 3000);
+    }
+</script>
 @endsection
