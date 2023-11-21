@@ -50,7 +50,7 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>@if($userEvents->contains($event->id))
-                        <th scope="col" class="name1">{{ $event->name }} ({{$event->shortcut}}) - twój event &#8727;</th>
+                        <th scope="col" class="name1">{{ $event->name }} ({{$event->shortcut}}) - &#8727; twoje wydarzenie</th>
                         @else
                         <th scope="col" class="name1">{{ $event->name }} ({{$event->shortcut}})</th>
                        @endif

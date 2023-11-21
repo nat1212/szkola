@@ -18,11 +18,11 @@
                 <div class="card-body">
                 @if($errors->any())
                     <div class="alert alert-danger">
-                        <ul>
+                       
                             @foreach($errors->all() as $error)
-                                <li>{{ $error }}</li>
+                                {{ $error }}
                             @endforeach
-                        </ul>
+                     
                     </div>
                 @endif
                     <form method="POST" action="/addMember">
@@ -145,9 +145,9 @@
         if (roleId === '1') {
             roleDescription = 'Opis roli 1';
         } else if (roleId === '2') {
-            roleDescription = 'Możliwa edycja/dodanie/usunęcie pod wydarzenia.Nie możliwe usunięcie wydarzenia oraz dodanie innych uczestników';
+            roleDescription = 'Możliwa praca nad wydarzeniem głównym(za wyjątkiem usunięcia) i podwydarzeniami';
         } else if (roleId === '3') {
-            roleDescription = 'Nie możliwa praca nad głównym wydarzeniem.Możliwa praca na pod wydarzeniami';
+            roleDescription = 'Możliwa praca tylko na podwydarzeniach';
         }
         // Dodaj więcej warunków, jeśli masz więcej ról
 

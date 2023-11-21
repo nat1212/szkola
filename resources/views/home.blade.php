@@ -129,7 +129,7 @@
                         <div data-id="{{ $event->id }}" id="delete-dialog" class="dialog">
                         <div class="dialog-content">
                             <p>Czy na pewno chesz usunąć wydarzenie?</p>
-                            <button data-id="{{ $event->id }}"class="btn btn-danger del">{{ $event->id }}Tak</button>
+                            <button data-id="{{ $event->id }}"class="btn btn-danger del">Tak</button>
                             <button class="btn btn-primary cancel-delete-button">Nie</button>
                         </div>
                     </div>
@@ -178,7 +178,7 @@
             <div data-id="{{ $info->id }}" id="delete-dialog" class="dialog">
             <div class="dialog-content">
                 <p>Czy na pewno chesz usunąć podwydarzenie?</p>
-                <button data-id="{{ $info->id }}" class="btn btn-danger usu" >{{ $info->id }}Tak</button>
+                <button data-id="{{ $info->id }}" class="btn btn-danger usu" >Tak</button>
                 <button class="btn btn-primary cancel-delete-button">Nie</button>
             </div>
         </div>
@@ -753,7 +753,7 @@ var csrfToken = $('meta[name="csrf-token"]').attr('content');
               })
 
               .done(function(response) {
-                  alert("Udało się");
+                alert("Udało się");
                   window.location.reload();
               })
               .fail(function(response) {

@@ -193,7 +193,7 @@
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('Utwórz') }}
                                 </button>
-                                <a href="{{ route('event.list') }}" class="btn btn-primary">
+                                <a href="{{ route('home') }}" class="btn btn-primary">
                                     {{ __('Wróć') }}
                                 </a>
                             </div>
