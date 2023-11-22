@@ -8,7 +8,11 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-            
+            @if(session('success') || session('error'))
+    <div id="notification-message" class="alert alert-{{ session('success') ? 'success' : 'danger' }}">
+        {{ session('success') ? session('success') : session('error') }}
+    </div>
+@endif  
                 <div class="card-header">{{ __('Podgląd') }}</div>
                 <div class="row mb-0">
         <div style="margin:15px">

@@ -97,7 +97,13 @@ class EventServicesController extends Controller
       }
       public function updateData(Request $request, $id)
     {
-        // Walidacja danych
+
+      $eventControllerInstance = new EventController();
+      $eventService = EventService::find($id);
+      $event_id = $eventService->events_id;
+
+      $hasPermission = $eventControllerInstance->permissions($event_id);
+      if($hasPermission !== null &&($hasPermission==1 || $hasPermission==2)){
         $validatedData = $request->validate([
             'date_start' => 'required|date',
             'date_end' => 'required|date',
@@ -118,13 +124,24 @@ class EventServicesController extends Controller
         $record->save();
 
         return redirect()->back()->with('success', 'Dane zostały zaktualizowane.');
+      }else{
+        return redirect()->back()->with('error', 'Nie masz uprawnień.');
+      }
     }
 
       public function destroy($id)
     {
+
         $currentDateTime = Carbon::now();
         $memberId = EventService::where('id', $id)->pluck('users_id')->first();
         $eventId = EventService::where('id', $id)->pluck('events_id')->first();
+        
+
+        $eventControllerInstance = new EventController();
+        
+  
+        $hasPermission = $eventControllerInstance->permissions($eventId);
+        if($hasPermission !== null &&($hasPermission==1 || $hasPermission==2)){
         EventService::where('id', $id)->update(['deleted_at' => $currentDateTime]);
         
         $userId=Auth::id(); 
@@ -133,8 +150,11 @@ class EventServicesController extends Controller
         Log::channel('php_file')->info('Użytkownik ' . $user->email . ': ' . $action.': '.$memberId.' dla wydarzenia o id:'.$eventId );
 
         return response() -> json([
-            'status' => 'Twoje wydarzenie zostło usunięte'
+            'status' => 'Zabrałeś uprawnienia'
     ]);
+    }else{
+      return redirect()->back()->with('error', 'Nie masz uprawnień.');
+    }
   }
 
 

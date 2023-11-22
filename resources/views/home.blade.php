@@ -600,8 +600,22 @@ document.getElementById('confirm-leave-button').addEventListener('click', functi
         dialog.style.display = 'none';
     });
 
+    function cancelChanges() {
+    var firstNameInput = document.getElementById("first_name");
+    firstNameInput.value = "{{ $user->first_name }}";
+    
+    var lastNameInput = document.getElementById("last_name");
+    lastNameInput.value = "{{ $user->last_name }}";
+
+    var emailInput = document.getElementById("email");
+    emailInput.value = "{{ $user->email }}";
+    
 
 
+    
+    var updateProfileBtn = document.getElementById('updateProfileBtn');
+    updateProfileBtn.disabled = true;
+    }
 
 function rat(x) {
  
